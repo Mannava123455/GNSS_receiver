@@ -1,0 +1,18 @@
+     3.03           OBSERVATION DATA    M: Mixed            RINEX VERSION / TYPE
+rinex ON            NSL                 20200205 155453 UTC PGM / RUN BY / DATE
+                                                            MARKER NAME
+                                                            MARKER TYPE
+rinex ON User                                               OBSERVER / AGENCY
+  4422036.2876   718376.6901  4524854.2575                  APPROX POSITION XYZ
+XXXXXXXX            Xiaomi              MI 8                REC # / TYPE / VERS
+XXXXXXXX            MI 8                                    ANT # / TYPE
+        0.0000        0.0000        0.0000                  APPROX POSITION XYZ
+        0.0000        0.0000        0.0000                  ANTENNA: DELTA H/E/N
+G    8 C1C L1C D1C S1C C5X L5X D5X S5X                      SYS / # / OBS TYPES
+R    4 C1C L1C D1C S1C                                      SYS / # / OBS TYPES
+E    8 C1C L1C D1C S1C C5X L5X D5X S5X                      SYS / # / OBS TYPES
+C    4 C2I L2I D2I S2I                                      SYS / # / OBS TYPES
+J    8 C1C L1C D1C S1C C5X L5X D5X S5X                      SYS / # / OBS TYPES
+S    4 C1C L1C D1C S1C                                      SYS / # / OBS TYPES
+  2020    02    05    14    55   12.0004352     GPS         TIME OF FIRST OBS
+                                                            END OF HEADER

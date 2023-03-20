@@ -10,12 +10,12 @@ rinex_data = gr.load(rinex_file)
 
 constel_data = rinex_data.to_dataframe()
 
-output_file = 'data.csv'
+output_file = 'new.csv'
 constel_data.to_csv(output_file, sep=',', index=True)
 
 
 # Read the CSV file
-constel_data = pd.read_csv('data.csv')
+constel_data = pd.read_csv('new.csv')
 
 # Select data for a specific satellite
 satellite_id = 'I02'

@@ -1,0 +1,11 @@
+     3.04           N: GNSS NAV DATA    I: IRNSS            RINEX VERSION / TYPE
+JPS2RIN v.2.1.223   JAVAD GNSS          20230311 000357 UTC PGM / RUN BY / DATE
+    18                                                      LEAP SECONDS
+ARHT                                    MARKER NAME         COMMENT
+66001M005                               MARKER NUMBER       COMMENT
+ -1312626.5320   311171.1250 -6213081.9240                  COMMENT
+This data is provided as a public service by NASA/JPL.      COMMENT
+No warranty is expressed or implied regarding suitability   COMMENT
+for use.  For further information, contact:                 COMMENT
+ggnops at jpl dot nasa dot gov                              COMMENT
+                                                            END OF HEADER
