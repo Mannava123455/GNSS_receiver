@@ -35,7 +35,10 @@ from conversions.funcs import *
 
 rawdata,data = readRinexN302(args.file)
 satp = calSatPos(data,timeCor=args.timeCor,iteration=args.iteration)
+satv = calSatvel(data,timeCor=args.timeCor,iteration=args.iteration)
 pos = satp.tolist()
+vel = satv.tolist()
+
 posi=[]
 X=[]
 Y=[]
@@ -50,6 +53,17 @@ for sublist in posi:
     sublist.pop()
 np.savetxt('./data/pos_main1.txt',posi,delimiter=',')
 np.savetxt('./data/pos_main1.csv',posi,delimiter=',')
+
+
+posv=[]
+for sublist in vel:
+    # Check if the sublist contains nan values
+    if np.isnan(sublist).any():
+        continue  # Skip this sublist and move on to the next one
+    else:
+        posv.append(sublist)  # Add this sublist to the new list
+np.savetxt('./data/vel_main1.txt',posv,delimiter=',')
+np.savetxt('./data/ve1_main1.csv',posv,delimiter=',')
 
 for sublist in posi:
     sublist.pop(0)
