@@ -34,6 +34,7 @@ from conversions.funcs import *
 
 
 rawdata,data = readRinexN302(args.file)
+print(data[0])
 satp = calSatPos(data,timeCor=args.timeCor,iteration=args.iteration)
 satv = calSatvel(data,timeCor=args.timeCor,iteration=args.iteration)
 pos = satp.tolist()

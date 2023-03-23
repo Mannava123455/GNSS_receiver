@@ -122,6 +122,9 @@ def calSatPos(data, timeCor=False, iteration='Newton'):
         cus = data[j,16]
         crc = data[j,23]
         crs = data[j,11]
+        cis = data[j,21]
+        cic = data[j,19]
+
         i0 = data[j,22]
         idot = data[j,26]
         omg0 = data[j,20]
@@ -209,6 +212,8 @@ def calSatvel(data, timeCor=False, iteration='Newton'):
         cus = data[j,16]
         crc = data[j,23]
         crs = data[j,11]
+        cis = data[j,21]
+        cic = data[j,19]
         i0 = data[j,22]
         idot = data[j,26]
         omg0 = data[j,20]
@@ -276,6 +281,7 @@ def calSatvel(data, timeCor=False, iteration='Newton'):
         E_dot=n*(1-e*np.cos(E))
         v_dot=(E_dot*np.sqrt(1-e*e))/(1-e*np.cos(E))
         di_dt=idot
+        di_dt = idot + 2*v_dot*(cis*np.cos(2*phi)-cic*np.sin(2*phi))
         u_dot=v_dot + 2*v_dot*(cus*np.cos(2*phi) - cuc*np.sin(2*phi))
         r_dot=e*A*E_dot*np.sin(E) + 2*v_dot*(crs*np.cos(2*phi) - crc*np.sin(2*phi))
         Omega_dot=(odot-omegae_dot)
@@ -436,14 +442,3 @@ def velocity(
 
     return x_kdot,y_kdot,z_kdot
     
-
-
-    
-
-
-
-
-
-
-
-
