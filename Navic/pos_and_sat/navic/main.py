@@ -9,6 +9,7 @@ import pytest
 import xarray
 from pytest import approx
 from datetime import datetime, timedelta
+import pymap3d as pr
 
 
 sys.path.insert(0,'/navic')
@@ -20,15 +21,15 @@ from conversions.funcs import *
 
 
 
-rinex_file = "1.rnx"
-output_file = 'data.csv'
+rinex_file = "./data/gps.rnx"
+output_file = './data/data.csv'
 
 rinex_to_csv(rinex_file, output_file)
 
 
-remove_empty_rows('data.csv', 'updated.csv')
+remove_empty_rows('./data/data.csv', './data/updated.csv')
 
-df = pd.read_csv('updated.csv')
+df = pd.read_csv('./data/updated.csv')
 
 GPSWeek = df['GPSWeek'].tolist()
 Toe = df['Toe'].tolist()
@@ -85,7 +86,9 @@ for i in range(0,len(M0)):
              attrs={"svtype": "G"},
              coords={"time": [time]},
          )
-        x, y, z = keplerian2ecef(dat)
+
+
+        x, y, z = position_of_sat(dat)
         a,b,c=velocity(dat)
         pos_x.append(x)
         pos_y.append(y)
@@ -95,71 +98,29 @@ for i in range(0,len(M0)):
         v_y.append(b)
         v_z.append(c)
 
+x1 = [a.tolist()[0] for a in pos_x]
+x2 = [a.tolist()[0] for a in pos_y]
+x3 = [a.tolist()[0] for a in pos_z]
+position = list([(a, b, c) for a, b, c in list(zip(x1, x2, x3))])
+np.savetxt("./data/pos_main.txt",position)
 
-        pos_x_list = [arr.tolist() for arr in pos_x]   # convert all NumPy arrays to lists
-        pos_y_list = [arr.tolist() for arr in pos_y]   # convert all NumPy arrays to lists
-        pos_z_list = [arr.tolist() for arr in pos_z]   # convert all NumPy arrays to lists
-        position_x = [num for sublist in pos_x_list for num in sublist]
-        position_y = [num for sublist in pos_y_list for num in sublist]
-        position_z = [num for sublist in pos_z_list for num in sublist]
-
-        v_x_list = [arr.tolist() for arr in v_x]   # convert all NumPy arrays to lists
-        v_y_list = [arr.tolist() for arr in v_y]   # convert all NumPy arrays to lists
-        v_z_list = [arr.tolist() for arr in v_z]   # convert all NumPy arrays to lists
-        vel_x = [num for sublist in v_x_list for num in sublist]
-        vel_y = [num for sublist in v_y_list for num in sublist]
-        vel_z = [num for sublist in v_z_list for num in sublist]
+v1 = [a.tolist()[0] for a in v_x]
+v2 = [a.tolist()[0] for a in v_y]
+v3 = [a.tolist()[0] for a in v_z]
+velocity = list([(a, b, c) for a, b, c in list(zip(v1, v2, v3))])
+np.savetxt("./data/vel_main.txt",velocity)
 
 
 
-x_pos = [list(arr) for arr in pos_x_list]
-X= list(itertools.chain(*x_pos))
-y_pos = [list(arr) for arr in pos_y_list]
-Y= list(itertools.chain(*y_pos))
-z_pos = [list(arr) for arr in pos_z_list]
-Z= list(itertools.chain(*z_pos))
-
-position = [[x1, y1, z1] for x1, y1, z1 in zip(X, Y, Z)]
-
-v1 = [list(arr) for arr in v_x_list]
-v_X= list(itertools.chain(*v1))
-v2 = [list(arr) for arr in v_y_list]
-v_Y= list(itertools.chain(*v2))
-v3 = [list(arr) for arr in v_z_list]
-v_Z= list(itertools.chain(*v3))
-
-velocity = [[x2, y2, z2] for x2, y2, z2 in zip(v_X, v_Y, v_Z)]
-
-
-
-print("position")
-print(position)
-
-print("velocity")
-print(velocity)
-
-#receiver points
 
 lat = 39.021
 lon = -76.827
 alt  = 19
+rx,ry,rz=pr.ecef2aer(x1, x2, x3, lat, lon, alt, ell=None, deg=True)
+spherical = [[x2, y2, z2] for x2, y2, z2 in zip(rx, ry, rz)]
+np.savetxt("./data/pos_main_sp.txt",spherical)
+np.savetxt("./data/pos_main_sp.csv",spherical)
 
-
-rx,ry,rz=geodetic_to_ecef(lon,lat,alt)
-print(" ");
-print("receiver coordinates with respect to receiver ");
-
-print(rx)
-print(ry)
-print(rz)
-
-with open('position.txt', 'w') as f:
-    for item in position:
-        f.write(f"{item}\n")
-
-with open('velocity.txt', 'w') as f:
-    for item in velocity:
-        f.write(f"{item}\n")
 
 
 
