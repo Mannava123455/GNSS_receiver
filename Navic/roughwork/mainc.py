@@ -50,6 +50,8 @@ IDOT = df['IDOT'].tolist()
 M0 = df['M0'].tolist()
 TransTime = df['TransTime'].tolist()
 
+print(M0)
+
 
 pos_x=[]
 pos_y=[]
