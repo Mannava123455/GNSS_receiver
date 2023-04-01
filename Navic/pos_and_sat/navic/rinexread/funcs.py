@@ -89,13 +89,13 @@ def navic(file):
     omega = df['omega'].tolist()
     OmegaDot = df['OmegaDot'].tolist()
     IDOT = df['IDOT'].tolist()
-    codesL2 = [0]*121
+    codesL2 = [0]*l
     BDTWeek = df['BDTWeek'].tolist()
-    L2flag = [0]*121
+    L2flag = [0]*l
     URA = df['URA'].tolist()
     health = df['health'].tolist()
     TGD = df['TGD'].tolist()
-    IODC =[0]*121
+    IODC =[0]*l
     TransTime = df['TransTime'].tolist()
     
     

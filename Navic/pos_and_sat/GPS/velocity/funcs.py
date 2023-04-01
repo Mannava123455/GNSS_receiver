@@ -91,7 +91,7 @@ def calSatvel(data, timeCor=False, iteration='Newton'):
                 m += 1
 
         E = NRnext
-        E=M+e*np.sin(M)
+        #E=M+e*np.sin(M)
         v = np.arctan2(np.sqrt(1-np.power(e,2))*np.sin(E),np.cos(E)-e)
         phi = v + w
         u = phi + cuc*np.cos(2*phi) + cus*np.sin(2*phi)
@@ -109,7 +109,7 @@ def calSatvel(data, timeCor=False, iteration='Newton'):
 
 
 
-        E_dot=n*(1-e*np.cos(E))
+        E_dot=n/(1-e*np.cos(E))
         v_dot=(E_dot*np.sqrt(1-e*e))/(1-e*np.cos(E))
         di_dt=idot
         di_dt = idot + 2*v_dot*(cis*np.cos(2*phi)-cic*np.sin(2*phi))

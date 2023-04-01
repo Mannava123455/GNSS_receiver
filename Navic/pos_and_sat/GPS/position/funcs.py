@@ -57,9 +57,9 @@ def calSatPos(data, timeCor=False, iteration='Newton'):
             m = 1
             while np.abs(NRnext-NR)>np.power(10.0,-16):
                 NR = NRnext
-                f = NR-e*np.sin(NR)-M
-                f1 = 1-e*np.cos(NR)
-                f2 = e*np.sin(NR)
+                f = NR-e*np.sin(NR)-M  #function f(NR) = NR - e*sin(NR) - M 
+                f1 = 1-e*np.cos(NR) # first order differentiation of f(NR)
+                f2 = e*np.sin(NR) # second order diff of f(NR)
                 if iteration=='Householder':
                     NRnext = NR - f/(f1-(f2*f/(2*f1)))
                 else:
@@ -88,9 +88,8 @@ def calSatPos(data, timeCor=False, iteration='Newton'):
                 else:
                     NRnext = NR - f/f1
                 m += 1
-    
         E = NRnext
-        E=M+e*np.sin(M)
+        #E=M+e*np.sin(M)
         v = np.arctan2(np.sqrt(1-np.power(e,2))*np.sin(E),np.cos(E)-e)
         phi = v + w
         u = phi + cuc*np.cos(2*phi) + cus*np.sin(2*phi)
