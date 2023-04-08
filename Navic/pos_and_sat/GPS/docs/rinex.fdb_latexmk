@@ -1,7 +1,7 @@
 # Fdb version 3
-["pdflatex"] 1680507853 "/home/mannava/module_3/Navic/pos_and_sat/GPS/docs/rinex.tex" "rinex.pdf" "rinex" 1680507854
+["pdflatex"] 1680509675 "/home/mannava/module_3/Navic/pos_and_sat/GPS/docs/rinex.tex" "rinex.pdf" "rinex" 1680509676
   "/etc/texmf/web2c/texmf.cnf" 1661155997 475 c0e671620eb5563b2130f56340a5fde8 ""
-  "/home/mannava/module_3/Navic/pos_and_sat/GPS/docs/rinex.tex" 1680507852 14844 6e914f4147999e6ea5fb6e7388915fab ""
+  "/home/mannava/module_3/Navic/pos_and_sat/GPS/docs/rinex.tex" 1680509674 14844 6e914f4147999e6ea5fb6e7388915fab ""
   "/usr/share/texlive/texmf-dist/fonts/enc/dvips/base/8r.enc" 1165713224 4850 80dc9bab7f31fb78a000ccfed0e27cab ""
   "/usr/share/texlive/texmf-dist/fonts/map/fontname/texfonts.map" 1577235249 3524 cb3e574dea2d1052e39280babc910dc8 ""
   "/usr/share/texlive/texmf-dist/fonts/tfm/adobe/courier/pcrr7t.tfm" 1136768653 960 379cc0019370a9e0208a0a3f949f847a ""
@@ -150,8 +150,8 @@
   "/var/lib/texmf/web2c/pdftex/pdflatex.fmt" 1661156182 2801233 f0ed76af5773fcbf2248a5cbcab7f3a4 ""
   "figs/1.pdf" 1680478958 20575 9449a44314a45e72f52771ecc9d5c4f1 ""
   "figs/2.pdf" 1680497058 31374 1b257c8776ce3f275ccccbe3bdb6bbfd ""
-  "rinex.aux" 1680507854 686 6d30f471a608ac5608924f0d054d9c6b "pdflatex"
-  "rinex.tex" 1680507852 14844 6e914f4147999e6ea5fb6e7388915fab ""
+  "rinex.aux" 1680509676 686 6d30f471a608ac5608924f0d054d9c6b "pdflatex"
+  "rinex.tex" 1680509674 14844 6e914f4147999e6ea5fb6e7388915fab ""
   (generated)
   "rinex.aux"
   "rinex.log"

@@ -28,7 +28,6 @@ rinex_to_csv(rinex_file, output_file)
 remove_empty_rows('./data/data.csv', './data/updated.csv')
 file="./data/updated.csv"
 data=navic(file)
-print(data[0])
 satp = calSatPos(data,timeCor=args.timeCor,iteration=args.iteration)
 satv = calSatvel(data,timeCor=args.timeCor,iteration=args.iteration)
 pos = satp.tolist()
@@ -52,10 +51,11 @@ for sublist  in pos:
       X.append(sublist[0])
       Y.append(sublist[1])
       Z.append(sublist[2])
-lat = 39.021
-lon = -76.827
-alt  = 19
+lat = 17.5910
+lon = 78.1213
+alt = 19
 rx,ry,rz=pr.ecef2aer(X,Y,Z,lat,lon,alt,ell=None,deg=True)
 spherical=[[i,j,k] for i,j,k in zip(rx,ry,rz)]
 np.savetxt("./data/pos_main1_sp.txt",spherical)
 np.savetxt("./data/pos_main1_sp.csv",spherical)
+
