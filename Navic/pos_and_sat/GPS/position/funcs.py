@@ -99,3 +99,49 @@ def calSatPos(data, timeCor=False, iteration='Newton'):
         sats[j,3] = y1*np.sin(i)
     return sats
 
+
+
+
+"""
+The parameters of rinex file
+
+RINEX VERSION / TYPE: 3.04 N: GNSS NAV DATA G: GPS
+PGM / RUN BY / DATE: JPS2RIN v.2.0.191 JAVAD GNSS 20210625 000625 UTC
+LEAP SECONDS: 18
+MARKER NAME: GODS
+MARKER NUMBER: 40451M128
+APPROX POSITION XYZ: 1130752.3120 -4831349.1180 3994098.9450
+G27: This is the PRN (pseudo-random noise) number of the GPS satellite
+2021 06 24 01 59 44: This is the date and time of the GPS data
+-1.520831137896D-04: Clock correction with respect to GPS time
+-6.139089236967D-12: Clock drift with respect to GPS time
+0.000000000000D+00: Clock drift rate with respect to GPS time
+1.500000000000D+01: IODE (Issue of Data, Ephemeris)
+7.231250000000D+01: Crs (Radius Correction)
+4.336252050875D-09: Delta n (Mean motion difference)
+2.080850228679D+00: M0 (Mean anomaly at reference time)
+3.596767783165D-06: Cuc (Argument of latitude, harmonic correction)
+9.450974990614D-03: Eccentricity
+-1.415610313416D-07: Cus (Sine of argument of latitude, harmonic correction)
+5.153684047699D+03: sqrt(A) (Square root of the semi-major axis)
+3.527840000000D+05: Toe (Time of ephemeris)
+-1.676380634308D-07: Cic (Inclination, harmonic correction)
+1.286603377064D+00: OMEGA0 (Longitude of ascending node at weekly epoch)
+-1.862645149231D-08: Cis (Sine of inclination, harmonic correction)
+9.755137728985D-01: i0 (Inclination angle at reference time)
+3.894375000000D+02: CRC (Amplitude of orbit radius correction)
+6.348804108489D-01: omega (Argument of perigee)
+-8.337132989339D-09: OMEGADOT (Rate of right ascension)
+1.871506527187D-10: IDOT (Rate of inclination angle)
+1.000000000000D+00: Codes on L2 channel
+2.163000000000D+03: GPS week number
+0.000000000000D+00: L2 P data flag
+2.000000000000D+00: SV accuracy (URA)
+0.000000000000D+00: SV health
+1.862645000000D-09: Tgd (Group delay)
+1.500000000000D+01: Transmission time of message (seconds)
+3.521400000000D+05: Fit interval (hours)
+4.000000000000D+00: Time of clock (hours)
+"""
+
+

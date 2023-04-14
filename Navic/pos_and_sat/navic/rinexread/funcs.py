@@ -13,52 +13,6 @@ import argparse
 
 
 
-def readRinexN302(file):
-    data = {}
-    with open(file,'r') as f:
-        foundend = 0
-        idx = 0
-        for line in f:
-            a = line.split(' ')
-            if 'END' in a:
-                foundend = 1
-                continue
-            if foundend==0:
-                continue
-            b = [x for x in a if x!='']
-            try:
-                b.remove('\n')
-            except:
-                pass
-            if len(b)!=4:
-                idx += 1
-                data[str(idx)] = b
-            else:
-                for each in b:
-                    data[str(idx)].append(each)
-                    
-    data2 = np.zeros([len(data),38])
-    outercount = 0
-    for (k,v) in data.items(): 
-        count = 0
-        for each in v:
-            if 'D' in each:
-                tmp = each.split('D')
-                tmp = float(tmp[0])*np.power(10.0,float(tmp[1]))
-            else:
-                if 'G' in each:
-                    tmp = float(each.split('G')[1])
-                elif 'C' in each:
-                    tmp = float(each.split('C')[1])
-                else:
-                    tmp = float(each)
-            data2[outercount,count] = tmp
-            count += 1
-        outercount += 1
-    return data, data2
-
-
-
 def navic(file):
     df = pd.read_csv(file)
     l=len(df)

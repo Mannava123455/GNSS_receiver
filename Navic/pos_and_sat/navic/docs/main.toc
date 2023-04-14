@@ -1,0 +1,24 @@
+\vskip -8pt
+\contentsline {schapter}{Introduction}{iii}{chapter*.2}%
+\contentsline {chapter}{\numberline {1}Design Parameters}{1}{chapter.1}%
+\contentsline {section}{\numberline {1.1}The Frequency Bands}{1}{section.1.1}%
+\contentsline {chapter}{\numberline {2}Channel Modelling}{3}{chapter.2}%
+\contentsline {section}{\numberline {2.1}Doppler shift}{3}{section.2.1}%
+\contentsline {section}{\numberline {2.2}Delay}{5}{section.2.2}%
+\contentsline {section}{\numberline {2.3}Power Scaling}{6}{section.2.3}%
+\contentsline {section}{\numberline {2.4}Receiver noise}{6}{section.2.4}%
+\contentsline {chapter}{\numberline {3}Transmitter}{7}{chapter.3}%
+\contentsline {section}{\numberline {3.1}Frame structure}{7}{section.3.1}%
+\contentsline {subsection}{\numberline {3.1.1}Cyclic Redundancy Check(CRC)}{7}{subsection.3.1.1}%
+\contentsline {section}{\numberline {3.2}Encoding}{8}{section.3.2}%
+\contentsline {subsection}{\numberline {3.2.1}Interleaving}{8}{subsection.3.2.1}%
+\contentsline {subsection}{\numberline {3.2.2}Sync word and Tail bits}{8}{subsection.3.2.2}%
+\contentsline {section}{\numberline {3.3}Modulation}{8}{section.3.3}%
+\contentsline {subsection}{\numberline {3.3.1}Standard Positioning Service}{8}{subsection.3.3.1}%
+\contentsline {subsection}{\numberline {3.3.2}Pseudo Random Noise codes(PRN)}{9}{subsection.3.3.2}%
+\contentsline {subsection}{\numberline {3.3.3}Baseband Modulation}{9}{subsection.3.3.3}%
+\contentsline {chapter}{\numberline {4}Computing the Position and Velocity of the satellite from the RINEX file}{11}{chapter.4}%
+\contentsline {section}{\numberline {4.1}Introduction}{11}{section.4.1}%
+\contentsline {section}{\numberline {4.2}Determination of satellite position}{11}{section.4.2}%
+\contentsline {subsection}{\numberline {4.2.1}Orbital parameters in rinex file}{12}{subsection.4.2.1}%
+\contentsline {section}{\numberline {4.3}Computing the position and velocity of the GPS satellite using python}{19}{section.4.3}%

@@ -28,6 +28,7 @@ rinex_to_csv(rinex_file, output_file)
 remove_empty_rows('./data/data.csv', './data/updated.csv')
 file="./data/updated.csv"
 data=navic(file)
+print(data[0])
 satp = calSatPos(data,timeCor=args.timeCor,iteration=args.iteration)
 satv = calSatvel(data,timeCor=args.timeCor,iteration=args.iteration)
 pos = satp.tolist()
