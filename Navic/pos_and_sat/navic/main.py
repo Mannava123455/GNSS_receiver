@@ -60,6 +60,8 @@ def binary_to_decimal(bi,bits,sf):
         binary=bi
         x=(b_2_d(binary))*(2**(sf))
         return x
+
+
 subframe_1=[random.randint(0, 1) for _ in range(292)]
 subframe_2=[random.randint(0, 1) for _ in range(292)]
 subframe_3=[random.randint(0, 1) for _ in range(292)]
@@ -199,6 +201,8 @@ L2flag=0
 health=0
 TransTime=0
 IODC=0
+
+
 data = [sv,time,month,day,hour,minute,second,SVclockBias,SVclockDrift,SVclockDriftRate,IODEC,Crs,DeltaN,M0,Cuc,Eccentricity,Cus,sqrtA,Toe,Cic,Omega0,Cis,Io,Crc,omega,OmegaDot,IDOT1,codesL2,BDTWeek,L2flag,URA,health,TGD,IODC,TransTime]
 
 print(data)
