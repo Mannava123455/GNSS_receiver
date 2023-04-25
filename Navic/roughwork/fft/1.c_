@@ -1,0 +1,59 @@
+#include <stdio.h>
+#include <stdlib.h>
+#include <math.h>
+
+#define N 8 // Length of input sequence
+#define PI 3.14159265358979323846
+
+void fft(double *x, double *y, int n) {
+  if (n == 1) {
+    y[0] = x[0];
+    return;
+  }
+
+  double xr[n/2], xi[n/2], yr[n/2], yi[n/2];
+  int i;
+
+  for (i = 0; i < n/2; i++) {
+    xr[i] = x[2*i];
+    xi[i] = x[2*i+1];
+  }
+
+  fft(xr, yr, n/2);
+  fft(xi, yi, n/2);
+
+  for (i = 0; i < n/2; i++) {
+    double t = -2 * PI * i / n;
+    double c = cos(t), s = sin(t);
+    y[i][0] = yr[i] + c * yi[i] - s * yi[i];
+    y[i][1] = yi[i] + c * yr[i] + s * yr[i];
+    y[i+n/2][0] = yr[i] - c * yi[i] + s * yi[i];
+    y[i+n/2][1] = yi[i] - c * yr[i] - s * yr[i];
+  }
+}
+
+int main() {
+  int i;
+  double x[N], y[N][2], freq[N];
+
+  // Generate input sequence
+  for (i = 0; i < N; i++) {
+    x[i] = sin(2 * PI * i / N);
+  }
+
+  // Compute FFT
+  fft(x, &y[0][0], N);
+
+  // Compute frequency axis
+  for (i = 0; i < N; i++) {
+    freq[i] = i * 1.0 / N;
+  }
+
+  // Print results
+  for (i = 0; i < N / 2; i++) {
+    printf("%f %f\n", freq[i], sqrt(y[i][0]*y[i][0] + y[i][1]*y[i][1]));
+  }
+
+  return 0;
+}
+

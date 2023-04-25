@@ -332,9 +332,12 @@ def navic_pcps_acquisition(x, prnSeq, fs, fSearch, threshold=0):
     """
 
     prnSeqFFT = np.conjugate(np.fft.fft(1-2*prnSeq))
+    print(prnSeq.shape)
     
     K = x.shape[0]
+    print(K)
     N = fSearch.shape[0]
+    print(N)
     ts = 1/fs
     t = np.arange(K)*ts
 

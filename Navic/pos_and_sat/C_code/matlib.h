@@ -2,14 +2,18 @@
 #include<stdio.h>
 #include<stdlib.h>
 #include<malloc.h>
+
+
 double *createarr(int m);
-double **createMat(int m,int n);
 void print(double **p, int m,int n);
 void printarr(double *p,int n);
 double **loadtxt(char *str,int m,int n);
 void readMat(double **p, int m,int n);
 void readarr(double *p, int n);
 int *createarrint(int m);
+void printmatint(int **p, int m,int n);
+void printarrint(int *p, int n);
+
 
 
 
@@ -63,7 +67,7 @@ void printarr(double *p, int n)
 
  for(i=0;i<n;i++)
  {
-  printf("%lf ",p[i]);
+  printf("%lf \n",p[i]);
 }
 }
 
@@ -75,6 +79,20 @@ void print(double **p, int m,int n)
  {
   for(j=0;j<n;j++)
   printf("%lf ",p[i][j]);
+ printf("\n");
+ }
+}
+
+void printmatint(int **p, int m,int n)
+{
+ int i,j;
+
+ for(i=0;i<m;i++)
+ {
+  for(j=0;j<n;j++)
+  {
+  printf("%d ",p[i][j]);
+  }
  printf("\n");
  }
 }
@@ -91,18 +109,6 @@ a = (double *)malloc(m * sizeof(double));
 
 
 
-double **createMat(int m,int n)
-{
- int i;
- double **a;
- 
- //Allocate memory to the pointer
-a = (double **)malloc(m * sizeof( *a));
-    for (i=0; i<m; i++)
-         a[i] = (double *)malloc(n * sizeof( *a[i]));
-
- return a;
-}
 
 double **loadtxt(char *str,int m,int n)
 {

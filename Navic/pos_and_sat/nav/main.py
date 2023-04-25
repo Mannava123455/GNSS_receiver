@@ -29,7 +29,8 @@ DtLin = 10*np.log10(Dt)
 Dr = 4;                      
 DrLin = 10*np.log10(Dr)
 Pt = 44.8;                   
-k = sciconst.Boltzmann;  
+k = sciconst.Boltzmann;
+print(k)
 T = 300;                     
 rxBW = 24e6;                 
 Nr = k*T*rxBW;
@@ -86,6 +87,7 @@ rxwaveform = resultsig + noisesig
 
 # Scale received signal to have unit power
 waveform = rxwaveform/rms(rxwaveform)
+
 fMin = -5000
 fMax = 5000
 fStep = 500
@@ -102,7 +104,12 @@ status, codePhase, doppler = navs.navic_pcps_acquisition(
                                 )   
 delaySamp = codePhase
 codePhase = (codePhase % codeTableSampCnt)/(sampleRate/codeFreqBasis)
+complex_array = np.array(waveform, dtype=np.complex128)
+real = [z.real for z in complex_array]
+imag = [z.imag for z in complex_array]
+np.savetxt("real.txt",real)
+np.savetxt("imag.txt",imag)
 
-np.savetxt("TransmittedWave.txt",waveform)
+
 
 
