@@ -4,7 +4,9 @@
 #include<math.h>
 #include<complex.h>
 #include<fftw3.h>
+#include<malloc.h>
 
+#define PI 3.141592653589793
 
 
 
@@ -12,16 +14,22 @@ double **createMat(int m,int n);
 double *loadtxta(char *str,int m);
 int **createMatint(int m,int n);
 int **transposeint(int **a,  int m, int n);
+int len(double *arr); 
+double complex **createMat_complex(int m,int n);
 int *genNavicCaCode(int s);
 int **genNavicCatable(double samplingFreq);
 int *arange(int m,int n,int step);
 double **receivedsignal(double *a,double *b,int sc);
-double **fft_complex(double **a,int sc);
-double **fft_real(double *a,int sc);
+double complex *fft_complex(double **x, int n);
+double complex *fft_real(double *x, int n);
+double complex *fft(double complex *x, int n);
+double complex *ifft(double complex *x, int n);
+double complex **fft2d(double complex **in, int nrow, int ncol); 
+double complex **ifft2d(double complex **in, int nrow, int ncol); 
 void pmfint(char *str, int **a,int r,int c); 
 void pmf(char *str, double **a,int r,int c);
 void pmfarr(char *str,double *a,int sc); 
-//double **acquisition(double **x,double **prn,int ip,double fs,double *fsearch,int threshold,int sc);
+int *acquisition(double **x,int **prnSeq,int index,double fs,double *fSearch,int length,int threshold,int sc);
 
 
 int **createMatint(int m,int n)
@@ -52,6 +60,18 @@ a = (double **)malloc(m * sizeof( *a));
  return a;
 }
 
+double complex  **createMat_complex(int m,int n)
+{
+ int i;
+ double complex **a;
+ 
+ //Allocate memory to the pointer
+a = (double complex **)malloc(m * sizeof( *a));
+    for (i=0; i<m; i++)
+         a[i] = (double complex *)malloc(n * sizeof( *a[i]));
+
+ return a;
+}
 
 
 int **transposeint(int **a,  int m, int n)
@@ -73,6 +93,23 @@ return c;
 
 }
 
+double **transpose(double **a,  int m, int n)
+{
+int i, j;
+double **c;
+//printf("I am here");
+c = createMat(n,m);
+
+ for(i=0;i<n;i++)
+ {
+  for(j=0;j<m;j++)
+  {
+c[i][j]= a[j][i];
+  }
+ }
+return c;
+
+}
 int *arange(int m,int n,int step)
 {
 	int *a;
@@ -86,7 +123,16 @@ int *arange(int m,int n,int step)
 }
 
 
-
+int len(double *arr) 
+{
+    int length = 0;
+    while (*arr) 
+    { 
+        length++;
+        arr++;
+    }
+    return length;
+}
 
 
 double *loadtxta(char *str,int m)
@@ -120,6 +166,9 @@ fprintf(fp,"%lf ",a[i][j]);
 fprintf(fp,"\n");
 }
 }
+
+
+
 void pmfint(char *str, int **a,int r,int c)  
 {
 int i,j;
@@ -146,6 +195,8 @@ for(i=0;i<sc;i++)
 fprintf(fp,"%lf\n",a[i]);
 }
 }
+
+
 
 int *genNavicCaCode(int s)
 {
@@ -302,83 +353,381 @@ double **receivedsignal(double *a,double *b,int sc)
 	return c;
 }
 
-double **fft_complex(double **a,int sc)
+
+
+
+
+// function for performing FFT of input signal and gives the output as double complex array.
+
+
+
+double complex *fft_complex(double **x, int n)
 {
-	fftw_complex  *in;
-	fftw_complex *out;
-	fftw_plan plan;
-        in = (fftw_complex *) fftw_malloc(sizeof(fftw_complex) * sc);
-        out = (fftw_complex*) fftw_malloc(sizeof(fftw_complex) * sc);
-	
-    for (int i = 0; i < sc; i++) 
+    fftw_complex *in,*out;
+    fftw_plan p;
+    int i;
+    in = (fftw_complex*)fftw_malloc(sizeof(fftw_complex) * n);
+    for(i=0;i<n;i++)
     {
-        in[i] = a[i][0] + I*a[i][1];
+	    in[i][0]=x[i][0];
+	    in[i][1]=x[i][1];
+    }
+    out = (fftw_complex*) fftw_malloc(sizeof(fftw_complex) * n);
+    p = fftw_plan_dft_1d(n, in, out, FFTW_FORWARD, FFTW_ESTIMATE);
+    double complex *b;
+    b=(double complex*)malloc(n*sizeof(double complex));
+    fftw_execute(p);
+
+    for(i=0;i<n;i++)
+    {
+	    b[i]=out[i][0] + out[i][1]*I;
     }
 
-    plan = fftw_plan_dft_1d(sc, in, out,FFTW_FORWARD,FFTW_ESTIMATE);
-    fftw_execute(plan);
-    double **b;
-    b=createMat(sc,2);
-    for (int i = 0; i < sc; i++) 
-    {
-	    b[i][0]=creal(out[i]);
-        
-    }
-    for (int i = 0; i < sc; i++) 
-    {
-	    b[i][1]=cimag(out[i]);
-        
-    }
+    fftw_destroy_plan(p);
     return b;
 }
 
 
-double **fft_real(double *a,int sc)
+double complex *fft_real(double *x, int n)
 {
-	fftw_complex  *in;
-	fftw_complex *out;
-	fftw_plan plan;
-        in = (fftw_complex *) fftw_malloc(sizeof(fftw_complex) * sc);
-        out = (fftw_complex*) fftw_malloc(sizeof(fftw_complex) * sc);
-	
-    for (int i = 0; i < sc; i++) 
+    fftw_complex *in,*out;
+    fftw_plan p;
+    int i;
+    in = (fftw_complex*) fftw_malloc(sizeof(fftw_complex) * n);
+    for(i=0;i<n;i++)
     {
-        in[i] = a[i];
+	    in[i][0]=x[i];
+	    in[i][1]=0;
+    }
+    out = (fftw_complex*) fftw_malloc(sizeof(fftw_complex) * n);
+    p = fftw_plan_dft_1d(n, in, out, FFTW_FORWARD, FFTW_ESTIMATE);
+    double complex *b;
+    b=(double complex*)malloc(n*sizeof(double complex));
+    fftw_execute(p);
+
+    for(i=0;i<n;i++)
+    {
+	    b[i]=out[i][0] + out[i][1]*I;
     }
 
-    plan = fftw_plan_dft_1d(sc, in, out,FFTW_FORWARD,FFTW_ESTIMATE);
-    fftw_execute(plan);
-    double **b;
-    b=createMat(sc,2);
-    for (int i = 0; i < sc; i++) 
-    {
-	    b[i][0]=creal(out[i]);
-        
-    }
-    for (int i = 0; i < sc; i++) 
-    {
-	    b[i][1]=cimag(out[i]);
-        
-    }
+    fftw_destroy_plan(p);
     return b;
 }
 
-//double **acquisition(double **x,int **prn,int ip,double fs,double *fsearch,int threshold,int sc)
-//
-//// x is input complex signal it is array of (10230,2)
-//// prn codeTable 2D array of size (10230,14)
-//// ip is index of prn array for specific prnid
-//// fs is sampling frequency
-//// fsearch is the array of frequencies to search
-//// sc is sample count
-//{
-//	threshold=0;
-//	double **prnFFT;
-//	prnFFT=createMat(sc,2);
-//	int i;
-//	double **bpsk;
-//	prnFFT=fft_real(prn,sc);
-//	return prnFFT;
-//
-//}
-//
+double complex *fft(double complex *x, int n)
+{
+    fftw_complex *in,*out;
+    fftw_plan p;
+    int i;
+    in = (fftw_complex*)fftw_malloc(sizeof(fftw_complex) * n);
+    for(i=0;i<n;i++)
+    {
+	    in[i][0]=creal(x[i]);
+	    in[i][1]=cimag(x[i]);
+    }
+    out = (fftw_complex*) fftw_malloc(sizeof(fftw_complex) * n);
+    p = fftw_plan_dft_1d(n, in, out, FFTW_FORWARD, FFTW_ESTIMATE);
+    double complex *b;
+    b=(double complex*)malloc(n*sizeof(double complex));
+    fftw_execute(p);
+
+    for(i=0;i<n;i++)
+    {
+	    b[i]=out[i][0] + out[i][1]*I;
+    }
+
+    fftw_destroy_plan(p);
+    return b;
+}
+
+double complex *ifft(double complex *x, int n)
+{
+    fftw_complex *in,*out;
+    fftw_plan p;
+    int i;
+    in = (fftw_complex*)fftw_malloc(sizeof(fftw_complex) * n);
+    for(i=0;i<n;i++)
+    {
+	    in[i][0]=creal(x[i]);
+	    in[i][1]=cimag(x[i]);
+    }
+    out = (fftw_complex*) fftw_malloc(sizeof(fftw_complex) * n);
+    p = fftw_plan_dft_1d(n, in, out, FFTW_BACKWARD, FFTW_ESTIMATE);
+    double complex *b;
+    b=(double complex*)malloc(n*sizeof(double complex));
+    fftw_execute(p);
+
+    for(i=0;i<n;i++)
+    {
+	    b[i]=out[i][0] + out[i][1]*I;
+    }
+
+    fftw_destroy_plan(p);
+    return b;
+}
+
+//function for performing fft for 2d matrix
+
+
+double complex **fft2d(double complex **in, int nrow, int ncol) 
+{
+    fftw_complex *in_row = (fftw_complex*) fftw_malloc(sizeof(fftw_complex) * ncol);
+    fftw_complex *out_row = (fftw_complex*) fftw_malloc(sizeof(fftw_complex) * ncol);
+
+    fftw_plan plan_forward = fftw_plan_dft_1d(ncol, in_row, out_row, FFTW_FORWARD, FFTW_ESTIMATE);
+    fftw_plan plan_backward = fftw_plan_dft_1d(ncol, in_row, out_row, FFTW_BACKWARD, FFTW_ESTIMATE);
+    double complex **out;
+    out=createMat_complex(nrow,ncol);
+    for(int i = 0; i < nrow; i++) 
+    {
+        for(int j = 0; j < ncol; j++) 
+	{
+            in_row[j][0] = creal(in[i][j]);
+            in_row[j][1] = cimag(in[i][j]);
+        }
+
+        fftw_execute(plan_forward);
+
+        for(int j = 0; j < ncol; j++) 
+	{
+            out[i][j] = out_row[j][0] + out_row[j][1] * I;
+        }
+    }
+
+    // Free memory and destroy plans
+    fftw_destroy_plan(plan_forward);
+    fftw_destroy_plan(plan_backward);
+    fftw_free(in_row);
+    fftw_free(out_row);
+    return out; 
+}
+
+
+double complex **ifft2d(double complex **in, int nrow, int ncol) 
+{
+    fftw_complex *in_row = (fftw_complex*) fftw_malloc(sizeof(fftw_complex) * ncol);
+    fftw_complex *out_row = (fftw_complex*) fftw_malloc(sizeof(fftw_complex) * ncol);
+
+    fftw_plan plan_forward = fftw_plan_dft_1d(ncol, in_row, out_row, FFTW_FORWARD, FFTW_ESTIMATE);
+    fftw_plan plan_backward = fftw_plan_dft_1d(ncol, in_row, out_row, FFTW_BACKWARD, FFTW_ESTIMATE);
+    double complex **out;
+    out=createMat_complex(nrow,ncol);
+    for(int i = 0; i < nrow; i++) 
+    {
+        for(int j = 0; j < ncol; j++) 
+	{
+            in_row[j][0] = creal(in[i][j]);
+            in_row[j][1] = cimag(in[i][j]);
+        }
+
+        fftw_execute(plan_backward);
+
+        for(int j = 0; j < ncol; j++) 
+	{
+            out[i][j] = (out_row[j][0] + out_row[j][1]*I)/ncol;
+        }
+    }
+
+    // Free memory and destroy plans
+    fftw_destroy_plan(plan_forward);
+    fftw_destroy_plan(plan_backward);
+    fftw_free(in_row);
+    fftw_free(out_row);
+    return out; 
+}
+
+int *max(double **a,int m,int n)
+{
+    double max = a[0][0];
+    int max_i = 0;
+    int max_j = 0;
+
+    for (int i = 0; i < m; i++) 
+{
+        for (int j = 0; j < n; j++) 
+	{
+            if (a[i][j] > max) 
+	    {
+                max = a[i][j];
+                max_i = i;
+                max_j = j;
+            }
+        }
+    }
+int *b;
+b=(int*)malloc(2*sizeof(int));
+b[0]=max_i;
+b[1]=max_j;
+return b;
+}
+
+
+
+
+
+	
+
+
+
+
+
+
+int *acquisition(double **x,int **prnSeq,int index,double fs,double *fSearch,int length,int threshold,int sc)
+{
+	/* x is input signal 2d array containg sc rows and 2 cols  one col is real part and another one is imaginary part
+	 * prnSeq is codeTable contains 14 cols and sc rows 
+	 * index is integer selecting the particular column in codeTable
+	 * fs is Sampling frequency
+	 * fSearch is the array of frequencies to search for doppler frequency
+	 * length is length of fSearch array
+	 * Threshold is the value at max correlation
+	 * sc is sample count
+	 */
+	   
+	int i,j;
+	threshold=0;
+
+	//declarations 
+	double *bpsk;   // 1-2*prnseq
+	double complex *prnSeqfft;   //fft of prnseq
+	double complex *cprnSeqfft;  //conjugate of fft of prnseq
+	double ts=1/fs;
+	int *t;
+	double *a;
+	double complex **signal;
+	double complex *input;
+	double complex **shift_input;
+	double complex **XFFT;
+	double complex **YFFT;
+	double complex **IYFFT;
+	double complex **Rxd;
+	double **res;
+	double **result;
+	double *temp;
+	double powIn;
+	double s=0;
+	double sMax;
+	double thresholdEst;
+	int *final,tau,fDev;
+
+
+
+
+	//creations
+	bpsk=(double *)malloc(sc*sizeof(double *));
+	prnSeqfft=(double complex*)malloc(sc*sizeof(double complex));
+	cprnSeqfft=(double complex*)malloc(sc*sizeof(double complex));
+	a=(double *)malloc(sc*sizeof(double *));
+	signal=createMat_complex(length,sc);
+	input=(double complex*)malloc(sc*sizeof(double complex));
+	shift_input=createMat_complex(length,sc);
+	YFFT=createMat_complex(length,sc);
+	IYFFT=createMat_complex(length,sc);
+	Rxd=createMat_complex(length,sc);
+	res=createMat(length,sc);
+	temp=(double *)malloc(sc*sizeof(double));
+	final=(int *)malloc(3*sizeof(int));
+
+
+	for(i=0;i<sc;i++)
+	{
+		bpsk[i]=1-2*prnSeq[i][index];
+	}
+	prnSeqfft=fft_real(bpsk,sc);
+	for(i=0;i<sc;i++)
+	{
+		cprnSeqfft[i]=conj(prnSeqfft[i]);
+	}
+	t=arange(0,sc,1);
+	for(i=0;i<sc;i++)
+	{
+		a[i]=t[i]*ts;
+	}
+	for(i=0;i<sc;i++)
+	{
+		input[i]=x[i][0] + x[i][1]*I;
+	}
+	for(i=0;i<length;i++)
+	{
+		for(j=0;j<sc;j++)
+		{
+			signal[i][j]=cexp(-2*I*PI*fSearch[i]*a[j]);
+		}
+	}
+	for(i=0;i<length;i++)
+	{
+		for(j=0;j<sc;j++)
+		{
+			shift_input[i][j]=input[j]*signal[i][j];
+		}
+	}
+	XFFT=fft2d(shift_input,length,sc);
+	for(i=0;i<length;i++)
+	{
+		for(j=0;j<sc;j++)
+		{
+			YFFT[i][j]=XFFT[i][j]*cprnSeqfft[j];
+		}
+	}
+	IYFFT=ifft2d(YFFT,length,sc);
+	for(i=0;i<length;i++)
+	{
+		for(j=0;j<sc;j++)
+		{
+			Rxd[i][j]=IYFFT[i][j]/sc;
+		}
+	}
+	for(i=0;i<length;i++)
+	{
+		for(j=0;j<sc;j++)
+		{
+			res[i][j]=pow(cabs(Rxd[i][j]),2);
+		}
+	}
+	result=transpose(res,length,sc);
+
+	int *b;
+	b=(int *)malloc(2*sizeof(int));
+	b=max(result,sc,length);
+	for(j=0;j<sc;j++)
+	{
+		temp[j]=pow(cabs(input[j]),2);
+	}
+	for(j=0;j<sc;j++)
+	{
+		s=s+temp[j];
+	}
+	powIn=s/sc;
+	sMax=result[b[0]][b[1]];
+	thresholdEst=2*sc*sMax/powIn;
+	if(thresholdEst>threshold)
+	{
+		tau=b[0];
+		fDev=fSearch[b[1]];
+		final[0]=1;
+		final[1]=tau;
+		final[2]=fDev;
+		return b;
+	}
+	else
+	{
+		return final;
+	}
+
+
+
+	
+}
+
+	
+
+
+
+
+
+
+
+
+
+
+

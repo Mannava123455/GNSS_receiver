@@ -332,12 +332,9 @@ def navic_pcps_acquisition(x, prnSeq, fs, fSearch, threshold=0):
     """
 
     prnSeqFFT = np.conjugate(np.fft.fft(1-2*prnSeq))
-    print(prnSeq.shape)
     
-    K = x.shape[0]
-    print(K)
-    N = fSearch.shape[0]
-    print(N)
+    K = x.shape[0]        #10230
+    N = fSearch.shape[0]  #21
     ts = 1/fs
     t = np.arange(K)*ts
 
@@ -376,6 +373,7 @@ class NavicTracker:
         self.PLLNoiseBandwidth = 18
 
         # Signal properties
+        self.PRNID = 1
         self.PRNID = 1
         self.CenterFrequency = 0
         self.SampleRate = 38.192e6  # In Hz
@@ -540,7 +538,6 @@ class NavicTracker:
             fllin = np.sum(iq_p.reshape((2, -1)).T, axis=0)
 
         # DLL discriminator
-        E = np.abs(integeval)
         L = np.abs(integlval)
         delayerr = (E-L)/(2*(E+L)) # Non-coherent early minus late normalized detector
 

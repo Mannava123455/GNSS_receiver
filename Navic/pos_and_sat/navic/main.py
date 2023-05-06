@@ -165,6 +165,8 @@ omega_dot =     decimal_to_binary(-2.738685505816E-09,22,-41)
 i0        =     decimal_to_binary(0.5082782060675,32,-31)
 
 frame=subframe_1+subframe_2+subframe_3+subframe_4
+
+
 BDTWeek          =     binary_to_decimal( WN,10,0)
 SVclockBias     =     binary_to_decimal(af0,22,-31)
 SVclockDrift    =     binary_to_decimal(af1,16,-43)

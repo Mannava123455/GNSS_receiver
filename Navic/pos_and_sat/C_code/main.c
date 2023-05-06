@@ -1,11 +1,13 @@
 #include<stdio.h>
 #include<stdlib.h>
-#include<malloc.h>
-#include"lib.h"
-#include<math.h>
-#include"matlib.h"
 #include<fftw3.h>
 #include<complex.h>
+#include<malloc.h>
+#include<math.h>
+#include"lib.h"
+#include"matlib.h"
+#define PI 3.141592653589793
+
 
 int main()
 {
@@ -14,7 +16,7 @@ int main()
 // simulation constants
 double codeFreqBasis,sampleRate,samplePeriod,simDuration,timeStep,numSteps,samplePerStep;
 
-int prnidmax=14;
+int prnidmax=14,j;
 
 codeFreqBasis = 1.023*pow(10,6);
 sampleRate    = 10*codeFreqBasis;
@@ -52,12 +54,13 @@ double FLLNoiseBandwidth  = 4;
 double DLLNoiseBandwidth  = 1;
 
 // creating the imaginary matrix that contains the received signal
-double *received_real,*received_imag,**received,**rfft;
+double *received_real,*received_imag,**received;
 received_real=createarr(sc);
 received_imag=createarr(sc);
 received_real=loadtxta("real.txt",sc);
 received_imag=loadtxta("imag.txt",sc);
 received=receivedsignal(received_real,received_imag,sc);  //received signal from transmitter
+//print(received,sc,2);
 
 
 double fMin,fMax,fStep;
@@ -65,34 +68,23 @@ fMin=-5000;
 fMax=5000;
 fStep=500;
 double *fSearch;
-double length=(fMax-fMin)/fStep;
+int length=(fMax-fMin)/fStep+1;
 fSearch=createarr(length);
 int i;
+int k1=0;
 for(i=fMin;i<fMax+fStep;i=i+fStep)
 {
-	fSearch[i]=i;
+	fSearch[k1]=i;
+	k1++;
 }
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+int *r;
+r=acquisition(received,codeTable,4,sampleRate,fSearch,length,0,sc);
+for(i=0;i<3;i++)
+{
+	printf("%d ",r[i]);
+}
 
 return 0;
 }
