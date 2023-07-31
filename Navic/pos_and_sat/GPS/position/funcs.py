@@ -41,7 +41,7 @@ def calSatPos(data, timeCor=False, iteration='Newton'):
         i0 = data[j,22]
         idot = data[j,26]
         omg0 = data[j,20]
-        odot = data[j,25] 
+        odot = data[j,25]
         e = data[j,15] # Eccentricity
         
         ## time correction

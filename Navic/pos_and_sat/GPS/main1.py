@@ -23,7 +23,7 @@ from rinex_to_csv.funcs import *
 from position.funcs import *
 from velocity.funcs import *
 from rinexread.funcs import *
-rinex_file = "./data/gps.rnx"
+rinex_file = "./data/a.rnx"
 output_file = './data/data.csv'
 rinex_to_csv(rinex_file, output_file)
 remove_empty_rows('./data/data.csv', './data/updated.csv')
