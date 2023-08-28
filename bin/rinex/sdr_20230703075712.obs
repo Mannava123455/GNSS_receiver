@@ -1,0 +1,29 @@
+     3.03           OBSERVATION DATA    M: Mixed            RINEX VERSION / TYPE
+GNSS-SDRLIB v1.1                        20230703 075712 UTC PGM / RUN BY / DATE 
+                                                            MARKER NAME         
+                                                            MARKER NUMBER       
+                                                            MARKER TYPE         
+                                                            OBSERVER / AGENCY   
+GNSS-SDRLIB         GNSS-SDRLIB         1.1                 REC # / TYPE / VERS 
+                                                            ANT # / TYPE        
+        0.0000        0.0000        0.0000                  APPROX POSITION XYZ 
+        0.0000        0.0000        0.0000                  ANTENNA: DELTA H/E/N
+G    4 C5A L5A D5A S5A                                      SYS / # / OBS TYPES 
+R    4 C5A L5A D5A S5A                                      SYS / # / OBS TYPES 
+E    4 C5A L5A D5A S5A                                      SYS / # / OBS TYPES 
+J    4 C5A L5A D5A S5A                                      SYS / # / OBS TYPES 
+S    4 C5A L5A D5A S5A                                      SYS / # / OBS TYPES 
+C    4 C5A L5A D5A S5A                                      SYS / # / OBS TYPES 
+I    4 C5A L5A D5A S5A                                      SYS / # / OBS TYPES 
+  1970    01    01    00    00   00.0000000     GPS         TIME OF FIRST OBS   
+  1970    01    01    00    00   00.0000000     GPS         TIME OF LAST OBS    
+G L5A  0.00000                                              SYS / PHASE SHIFT   
+R L5A  0.00000                                              SYS / PHASE SHIFT   
+E L5A  0.00000                                              SYS / PHASE SHIFT   
+J L5A  0.00000                                              SYS / PHASE SHIFT   
+S L5A  0.00000                                              SYS / PHASE SHIFT   
+C L5A  0.00000                                              SYS / PHASE SHIFT   
+I L5A                                                       SYS / PHASE SHIFT   
+  0                                                         GLONASS SLOT / FRQ #
+ C1C    0.000 C1P    0.000 C2C    0.000 C2P    0.000        GLONASS COD/PHS/BIS 
+                                                            END OF HEADER       
