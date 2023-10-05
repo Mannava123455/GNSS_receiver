@@ -1,0 +1,341 @@
+{
+ "cells": [
+  {
+   "cell_type": "code",
+   "execution_count": 1,
+   "metadata": {},
+   "outputs": [],
+   "source": [
+    "import numpy as np\n",
+    "import scipy.constants as sciconst\n",
+    "import matplotlib.pyplot as plt\n",
+    "import navicsim as navs\n"
+   ]
+  },
+  {
+   "attachments": {},
+   "cell_type": "markdown",
+   "metadata": {},
+   "source": [
+    "## Simulation constants "
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 2,
+   "metadata": {},
+   "outputs": [],
+   "source": [
+    "codeFreqBasis = 1.023e6\n",
+    "sampleRate = 10*codeFreqBasis\n",
+    "samplePeriod = 1/sampleRate\n",
+    "\n",
+    "simDuration = 100 #48 sec for 2400 symbols #in Seconds\n",
+    "timeStep = 1e-3\n",
+    "numSteps = round(simDuration/timeStep)\n",
+    "samplePerStep = int(timeStep/samplePeriod)\n",
+    "\n",
+    "codeTable = navs.genNavicCaTable(sampleRate)\n",
+    "codeTableSampCnt = len(codeTable)\n",
+    "satId = np.array([5, 7, 3, 1])\n",
+    "numChannel = len(satId)"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 3,
+   "metadata": {},
+   "outputs": [],
+   "source": [
+    "c = sciconst.speed_of_light\n",
+    "fe = 1176.45e6;              \n",
+    "Dt = 12;                     \n",
+    "DtLin = 10*np.log10(Dt)\n",
+    "Dr = 4;                      \n",
+    "DrLin = 10*np.log10(Dr)\n",
+    "Pt = 44.8;                   \n",
+    "k = sciconst.Boltzmann;  \n",
+    "T = 315;                     \n",
+    "rxBW = 40e6;                 \n",
+    "Nr = k*T*rxBW;               "
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 4,
+   "metadata": {},
+   "outputs": [],
+   "source": [
+    "PLLIntegrationTime = 1e-3\n",
+    "PLLNoiseBandwidth = 90 # In Hz\n",
+    "FLLNoiseBandwidth = 4  # In Hz\n",
+    "DLLNoiseBandwidth = 1  # In Hz"
+   ]
+  },
+  {
+   "attachments": {},
+   "cell_type": "markdown",
+   "metadata": {},
+   "source": [
+    "## Channel configuration"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 5,
+   "metadata": {},
+   "outputs": [],
+   "source": [
+    "fShift = np.array([3589, 2256, 1596, 2568])\n",
+    "channelpfo = navs.PhaseFrequencyOffset(sampleRate)\n",
+    "\n",
+    "sigDelay = np.array([300.34, 587.21, 425.89, 312.88])\n",
+    "dynamicDelayRange = 50\n",
+    "staticDelay = np.round(sigDelay - dynamicDelayRange)\n",
+    "channelstatd = navs.IntegerDelay(staticDelay)\n",
+    "channelvard = navs.FractionalDelay(4, 65535)\n",
+    "\n",
+    "sqrtPr = np.sqrt(Pt*DtLin*DrLin)*(1/(4*np.pi*(fe+fShift)*sigDelay*samplePeriod))"
+   ]
+  },
+  {
+   "attachments": {},
+   "cell_type": "markdown",
+   "metadata": {},
+   "source": [
+    "## Run Simulation"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 6,
+   "metadata": {},
+   "outputs": [
+    {
+     "name": "stdout",
+     "output_type": "stream",
+     "text": [
+      "Acquisition results for PRN ID 5\n",
+      " Status:True Doppler:3500 Delay/Code-Phase:300/30.0\n",
+      "Acquisition results for PRN ID 7\n",
+      " Status:True Doppler:2000 Delay/Code-Phase:587/58.7\n",
+      "Acquisition results for PRN ID 3\n",
+      " Status:True Doppler:1500 Delay/Code-Phase:426/42.6\n",
+      "Acquisition results for PRN ID 1\n",
+      " Status:True Doppler:2500 Delay/Code-Phase:313/31.3\n",
+      "100000\n"
+     ]
+    }
+   ],
+   "source": [
+    "datagen = navs.NavicDataGen(50, sampleRate, numChannel)\n",
+    "modulator = navs.NavicL5sModulator(sampleRate)\n",
+    "\n",
+    "rms = lambda x: np.sqrt(np.mean(np.abs(x)**2, axis=0)) \n",
+    "\n",
+    "for istep in range(numSteps):\n",
+    "    \n",
+    "    # Baseband modulation\n",
+    "    navdata = datagen.GenerateBits(timeStep)\n",
+    "    \n",
+    "    iqsig = modulator.Modulate(navdata, codeTable[:, satId-1])\n",
+    "\n",
+    "    # Doppler shift\n",
+    "    doppsig = channelpfo.Offset(iqsig, fShift)\n",
+    "\n",
+    "    # Delay\n",
+    "    staticDelayedSignal = channelstatd.Delay(doppsig)\n",
+    "    leftoutDelay = sigDelay - staticDelay\n",
+    "    delayedSig = channelvard.Delay(staticDelayedSignal, leftoutDelay)\n",
+    "\n",
+    "    # Power scaling\n",
+    "    scaledSig = navs.PowerScale(delayedSig, sqrtPr)\n",
+    "\n",
+    "    # Add signals from each channel\n",
+    "    resultsig = np.sum(scaledSig, axis=1)\n",
+    "\n",
+    "    # Generate noise\n",
+    "    noisesig = (np.random.normal(scale=Nr**0.5, size=(samplePerStep, )) + 1j*np.random.normal(scale=Nr**0.5, size=(samplePerStep, )))/2**0.5\n",
+    "\n",
+    "    # Add thermal noise to composite signal\n",
+    "    rxwaveform = resultsig + noisesig\n",
+    "\n",
+    "    # Scale received signal to have unit power\n",
+    "    waveform = rxwaveform/rms(rxwaveform)  \n",
+    "\n",
+    "    # Perform acquisition once from cold-start\n",
+    "    if istep == 0:\n",
+    "\n",
+    "        # Acqusition doppler search space\n",
+    "        fMin = -5000\n",
+    "        fMax = 5000\n",
+    "        fStep = 500\n",
+    "        fSearch = np.arange(fMin, fMax+fStep, fStep)\n",
+    "\n",
+    "        tracker = []\n",
+    "        satVis = 0\n",
+    "        \n",
+    "        # Perform acquisition for each satellite\n",
+    "        for prnId in satId:\n",
+    "            status, codePhase, doppler = navs.navic_pcps_acquisition(\n",
+    "                                            waveform, \n",
+    "                                            codeTable[np.arange(0, samplePerStep)%codeTableSampCnt, prnId-1], \n",
+    "                                            sampleRate, \n",
+    "                                            fSearch\n",
+    "                                        )   \n",
+    "            delaySamp = codePhase\n",
+    "            codePhase = (codePhase % codeTableSampCnt)/(sampleRate/codeFreqBasis)\n",
+    "\n",
+    "            print(f\"Acquisition results for PRN ID {prnId}\\n Status:{status} Doppler:{doppler} Delay/Code-Phase:{delaySamp}/{codePhase}\")\n",
+    "\n",
+    "            # If a satellite is visible, initialize tracking loop\n",
+    "            if(status == True):\n",
+    "                satVis += 1\n",
+    "\n",
+    "                tracker.append(navs.NavicTracker())\n",
+    "                tracker[-1].SampleRate = sampleRate\n",
+    "                tracker[-1].CenterFrequency = 0\n",
+    "                tracker[-1].PLLNoiseBandwidth = PLLNoiseBandwidth\n",
+    "                tracker[-1].FLLNoiseBandwidth = FLLNoiseBandwidth\n",
+    "                tracker[-1].DLLNoiseBandwidth = DLLNoiseBandwidth\n",
+    "                tracker[-1].PLLIntegrationTime = round(PLLIntegrationTime*1e3)\n",
+    "                tracker[-1].PRNID = prnId\n",
+    "                tracker[-1].InitialDopplerShift = doppler\n",
+    "                tracker[-1].InitialCodePhaseOffset = codePhase\n",
+    "                tracker[-1].setupImpl()\n",
+    "                tracker[-1].resetImpl()\n",
+    "\n",
+    "            trackDataShape = (numSteps*round(PLLIntegrationTime*1e3), satVis)\n",
+    "            y = np.empty(trackDataShape, dtype=np.complex_)\n",
+    "            fqyerr = np.empty(trackDataShape)\n",
+    "            fqynco = np.empty(trackDataShape)\n",
+    "            pherr = np.empty(trackDataShape)\n",
+    "            phnco = np.empty(trackDataShape)\n",
+    "            delayerr = np.empty(trackDataShape)\n",
+    "            delaynco = np.empty(trackDataShape)\n",
+    "\n",
+    "    # Perform tracking for visible satellites\n",
+    "    for i in range(satVis):\n",
+    "      y[istep, i], fqyerr[istep, i], fqynco[istep, i], pherr[istep, i], phnco[istep, i], delayerr[istep, i], delaynco[istep, i] = tracker[i].stepImpl(waveform)\n",
+    "\n",
+    "print(len(y))"
+   ]
+  },
+  {
+   "attachments": {},
+   "cell_type": "markdown",
+   "metadata": {},
+   "source": [
+    "## Bit and Frame Synchronization"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 10,
+   "metadata": {},
+   "outputs": [
+    {
+     "name": "stdout",
+     "output_type": "stream",
+     "text": [
+      "Synchronization index: 1\n",
+      "Frame Sync status: -1\n",
+      "Frame Sync: 598\n",
+      "Equal\n",
+      "Equal\n",
+      "Equal\n",
+      "Equal\n",
+      "Equal\n",
+      "Equal\n",
+      "Equal\n",
+      "Synchronization index: 1\n",
+      "Frame Sync status: -1\n",
+      "Frame Sync: 598\n",
+      "Equal\n",
+      "Equal\n",
+      "Equal\n",
+      "Equal\n",
+      "Equal\n",
+      "Equal\n",
+      "Equal\n",
+      "Synchronization index: 1\n",
+      "Frame Sync status: -1\n",
+      "Frame Sync: 598\n",
+      "Equal\n",
+      "Equal\n",
+      "Equal\n",
+      "Equal\n",
+      "Equal\n",
+      "Equal\n",
+      "Equal\n",
+      "Synchronization index: 1\n",
+      "Frame Sync status: 1\n",
+      "Frame Sync: 598\n",
+      "Equal\n",
+      "Equal\n",
+      "Equal\n",
+      "Equal\n",
+      "Equal\n",
+      "Equal\n",
+      "Equal\n"
+     ]
+    }
+   ],
+   "source": [
+    "for i in range(satVis):\n",
+    "    n = 20 #Number of data per bit\n",
+    "    skip = 2 #Forgo few bits as the tracking loops starts early\n",
+    "    k = np.imag(y[n*skip:,i])\n",
+    "    sync_index, num_tr = navs.gnss_bit_synchronize(k, n)\n",
+    "    print(\"Synchronization index:\", sync_index)\n",
+    "\n",
+    "    l = np.mean(k[sync_index:(((len(k)-sync_index)//n) * n) + sync_index].reshape(-1,n).T, axis=0)\n",
+    "    mapbits = lambda l: np.piecewise(l, [l < 0, l >= 0], [1, 0])\n",
+    "    bits = mapbits(l)\n",
+    "    status, fsync_index = navs.find_sync_word(bits)\n",
+    "\n",
+    "    print(\"Frame Sync status:\", status)\n",
+    "    print(\"Frame Sync:\", fsync_index)\n",
+    "    if status == -1:\n",
+    "        bits = 1*np.logical_not(bits)\n",
+    "    \n",
+    "    sync_frames = bits[fsync_index:]\n",
+    "    num_sf = len(sync_frames)//600\n",
+    "    check = navs.decoder(sync_frames[0:num_sf*600].reshape(-1,600),num_sf).reshape(-1,286)\n",
+    "    navbits = datagen.GetBitStream()[292:292+num_sf*292,i].reshape(-1,292)\n",
+    "    for j in range(num_sf):\n",
+    "        if(np.array_equal(check[j], navbits[j,:-6])):\n",
+    "            print(\"Equal\")\n",
+    "        else:\n",
+    "            print(\"Not Equal\")"
+   ]
+  }
+ ],
+ "metadata": {
+  "kernelspec": {
+   "display_name": "Python 3",
+   "language": "python",
+   "name": "python3"
+  },
+  "language_info": {
+   "codemirror_mode": {
+    "name": "ipython",
+    "version": 3
+   },
+   "file_extension": ".py",
+   "mimetype": "text/x-python",
+   "name": "python",
+   "nbconvert_exporter": "python",
+   "pygments_lexer": "ipython3",
+   "version": "3.11.2"
+  },
+  "orig_nbformat": 4,
+  "vscode": {
+   "interpreter": {
+    "hash": "916dbcbb3f70747c44a77c7bcd40155683ae19c65e1c03b4aa3499c5328201f1"
+   }
+  }
+ },
+ "nbformat": 4,
+ "nbformat_minor": 2
+}
