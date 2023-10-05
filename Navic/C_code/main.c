@@ -80,7 +80,7 @@ for(i=fMin;i<fMax+fStep;i=i+fStep)
 
 
 int *r;
-r=acquisition(received,codeTable,2,sampleRate,fSearch,length,0,sc);
+r=acquisition(received,codeTable,4,sampleRate,fSearch,length,0,sc);
 for(i=0;i<3;i++)
 {
 	printf("%d ",r[i]);
