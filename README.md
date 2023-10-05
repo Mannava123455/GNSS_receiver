@@ -1,14 +1,9 @@
 # module_3
-Fwc module_3  NAVIC satellite communication
 
+### Implemented the navic L5 receiver in a real time using SDR
 
-Implemented the navic L5 receiver in a real time using SDR
+### Instructions to configure the setup
 
-Instructions to configure the setup
-
-Aim: 1)To implement the navic receiver in a realtime in software using SDR.
-     2)Created the transmiter for navic L5  and the samples are transmitted using USRP. 
-     3)Bladerf is used at the receiver side and make the proceesing for receiver position.
 
 
 Requirements: 
