@@ -7,10 +7,15 @@
 #include <time.h>
 #include"gps.h"
 
+
+
 int main()
 {
-	generateGoldCodes();
-	stretchGoldCodes();
+	int sample_rate=5456000;
+	int if_freq= 4092000;
+	gps_setup(sample_rate,if_freq);
+
+
 	return 0;
 }
 

@@ -1,12 +1,14 @@
 
 #include <stdio.h>
-#include<stdint.h>
+#include <stdint.h>
 #include <stdlib.h>
 #include <malloc.h>
 #include <string.h>
 #include <memory.h>
 #include <math.h>
 #include <time.h>
+
+
 #define SHOW_TIMING_SNAPSHOT_FREQ_MS     (20)
 #define SHOW_SOLUTION_MS              (20)
 #define CHIPS_PER_MS              (1023)
@@ -401,8 +403,6 @@ static void g2_lfsr(unsigned char tap0, unsigned char tap1, unsigned char *out) 
   }
 }
 
-
-
 static void combine_g1_and_g2(unsigned char *g1, unsigned char *g2, unsigned char *out)
 {
   int i;
@@ -411,6 +411,17 @@ static void combine_g1_and_g2(unsigned char *g1, unsigned char *g2, unsigned cha
   }
 }
 
+static void bitmap_set_bit(uint_32 *bitmap, int o, int s)
+{
+ if(s) 
+ {
+    bitmap[o/32] |= 1<<(o%32);
+ } 
+ else
+ {
+    bitmap[o/32] &= ~(1<<(o%32));  
+ }
+}
 
 void generateGoldCodes(void)
 {
@@ -437,24 +448,12 @@ void generateGoldCodes(void)
 }
 
 
-
-
-static void bitmap_set_bit(uint_32 *bitmap, int o, int s)
+void printBinary(uint32_t n) 
 {
- if(s) {
-    bitmap[o/32] |= 1<<(o%32);
- } else {
-    bitmap[o/32] &= ~(1<<(o%32));      
- }
-}
-
-
-void printBinary(uint32_t n) {
     for (int i = 31; i >= 0; i--) {
         printf("%d", (n >> i) & 1);
     }
 }
-
 static void stretchGoldCodes(void) 
 {
   int i;
@@ -468,12 +467,57 @@ static void stretchGoldCodes(void)
                       samples_for_acquire-1 - j,
                       space_vehicles[i].gold_code[index]);
     }
-
-
-
   }
-
-  
 }
+
+void gps_setup(int sample_rate,int if_freq)
+{
+
+int i,j,band;
+band_bandwidth   =  1000/ms_for_acquire;
+search_bands     =  5000/band_bandwidth*2+1;
+samples_per_ms   =  sample_rate/1000;
+code_offset_in_ms=  samples_per_ms-1;
+samples_for_acquire = samples_per_ms*ms_for_acquire;
+acquire_min_power  = ms_for_acquire*ms_for_acquire*samples_per_ms*2;
+acquire_bitmap_size_u32 = (samples_for_acquire+31)/32;
+if_cycles_per_ms = if_freq/1000;
+
+printf("Alllocating memory for %i space vehicles \n ",(int)N_SV);
+
+for(i=0;i<N_SV;i++)
+{
+	struct Space_vehicle *sv;
+	sv=space_vehicles+i;
+
+	sv->acquire.gold_code_stretched = malloc(acquire_bitmap_size_u32*4);
+
+	sv->acquire.seek_in_phase       = malloc(sizeof(uint_32*)*search_bands);
+	sv->acquire.seek_quadrature     = malloc(sizeof(uint_32*)*search_bands);
+
+	for(band=0;band<search_bands;band++)
+	{
+		sv->acquire.seek_in_phase[band]   = malloc(acquire_bitmap_size_u32*4);
+		sv->acquire.seek_quadrature[band]   = malloc(acquire_bitmap_size_u32*4);
+	}
+}
+}
+
+
+printf("Gold codes");
+generateGoldCodes();
+printf("Stretched_Gold_codes \n");
+stretchGoldCodes();
+
+for(i=0;i<32;i++)
+{
+	printf("\n  stretched gold codes for %d satellite  \n",i);
+	for(j=0;j<acquire_bitmap_size_u32 ;j++)
+	{
+		printBinary(space_vehicles[i].acquire.gold_code_stretched[j]);
+	}
+}
+}
+	
 
 
