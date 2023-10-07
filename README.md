@@ -1,4 +1,4 @@
-# module_3
+# Project done under Dr.GVV Sharma Assoc Prof IITH
 
 ### Implemented the navic L5 receiver in a real time using SDR
 
