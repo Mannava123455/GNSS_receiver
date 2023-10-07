@@ -47,7 +47,7 @@ This command will generate bin file that contain the IQ samples of 300 sec with 
 
 For file input we have to use 8 bit duration 
 ```
- ./navic-sdr-sim -e brdc1380.23n -s 2048000 -l 30,120,100 -b 8
+ ./navic-sdr-sim -e brdc1380.23n -s 2048000 -l 30,120,100 -b 8  i.e in bin file 1st 8 bits is I and second 8 bits is Q and this flow will continous
 
 ```
 ## Receiver
