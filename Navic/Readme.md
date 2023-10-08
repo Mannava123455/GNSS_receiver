@@ -71,3 +71,18 @@ cd navic_receiver/bin
 ```
 ./ignss-sdrcli
 ```
+For installing RTKLIB 
+```
+git clone https://github.com/tomojitakasu/RTKLIB.git
+```
+```
+cd RTKLIB/app/rnx2rtkp/gcc
+```
+```
+make
+```
+Copy the executable file to the generated rinex file and execute with the folllowing command
+
+```
+./rnx2rtkp -p 2 -f 1 -t -s , -l 0.0 0.0 0.0 $obsfile $navfile 
+```
