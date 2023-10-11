@@ -201,8 +201,10 @@ int main(int argc, char* argv[])
 
         for (i = 0; i < Len; i++) 
 	{
-            data[i][0] = a[i][0] ? -1 : 1;
-            data[i][1] = a[i][1] ? -1 : 1;
+            data[i][0] = a[i][0]>0 ? -1 : 1;
+            data[i][1] = a[i][1]>0 ? -1 : 1;
+            //data[i][0] = a[i][0];
+            //data[i][1] = a[i][1];
         }
 
         p = fftw_plan_dft_1d(Len, data, data, FFTW_FORWARD, FFTW_ESTIMATE);

@@ -325,7 +325,8 @@ struct Space_vehicle {
 unsigned bitmap_size_u32;
 unsigned search_bands;
 unsigned band_bandwidth;
-unsigned *sample_history;
+unsigned *sample_history_I;
+unsigned *sample_history_Q;
 unsigned *work_buffer;
 
 #define ATAN2_SIZE 128
@@ -470,10 +471,24 @@ static void stretchGoldCodes(void)
   }
 }
 
-void gps_setup(int sample_rate,int if_freq)
+
+
+
+
+
+
+
+
+
+int gps_setup(int sample_rate,int if_freq)
 {
 
 int i,j,band;
+if(sample_rate % 1000 != 0)
+  { 
+     printf("Sample rate must be a multiple of 1000\n");
+     return 0;
+  }
 band_bandwidth   =  1000/ms_for_acquire;
 search_bands     =  5000/band_bandwidth*2+1;
 samples_per_ms   =  sample_rate/1000;
@@ -481,7 +496,31 @@ code_offset_in_ms=  samples_per_ms-1;
 samples_for_acquire = samples_per_ms*ms_for_acquire;
 acquire_min_power  = ms_for_acquire*ms_for_acquire*samples_per_ms*2;
 acquire_bitmap_size_u32 = (samples_for_acquire+31)/32;
+printf("%i",acquire_bitmap_size_u32); 
 if_cycles_per_ms = if_freq/1000;
+
+printf(" allocating memory\n");
+
+sample_history_I= malloc(acquire_bitmap_size_u32*4);
+sample_history_Q= malloc(acquire_bitmap_size_u32*4);
+
+if(sample_history_I == NULL) 
+{
+    printf("Out of memory for history\n");
+    return 0;
+}
+if(sample_history_Q == NULL) 
+{
+    printf("Out of memory for history\n");
+    return 0;
+}
+
+  work_buffer = malloc(acquire_bitmap_size_u32*4);
+  if(work_buffer == NULL) 
+{
+    printf("Out of memory for history\n");
+    return 0;
+}
 
 printf("Alllocating memory for %i space vehicles \n ",(int)N_SV);
 
@@ -491,17 +530,43 @@ for(i=0;i<N_SV;i++)
 	sv=space_vehicles+i;
 
 	sv->acquire.gold_code_stretched = malloc(acquire_bitmap_size_u32*4);
+	if(sv->acquire.gold_code_stretched == NULL) 
+	{
+        printf("Out of memory for gold_code_stretched\n");
+        return 0;
+	}
 
 	sv->acquire.seek_in_phase       = malloc(sizeof(uint_32*)*search_bands);
+	 if(sv->acquire.seek_in_phase == NULL)
+	{
+        printf("Out of memory for seek_in_phase\n");
+        return 0;
+	}
 	sv->acquire.seek_quadrature     = malloc(sizeof(uint_32*)*search_bands);
+	if(sv->acquire.seek_quadrature == NULL)
+	{
+        printf("Out of memory for seek_quadrature\n");
+        return 0;
+	}
 
 	for(band=0;band<search_bands;band++)
 	{
-		sv->acquire.seek_in_phase[band]   = malloc(acquire_bitmap_size_u32*4);
-		sv->acquire.seek_quadrature[band]   = malloc(acquire_bitmap_size_u32*4);
+	sv->acquire.seek_in_phase[band]   = malloc(acquire_bitmap_size_u32*4);
+	if(sv->acquire.seek_in_phase[band]==NULL)
+	{
+            printf("Out of memory for sv->seek_in_phase[]\n");
+            return 0;            
+        }
+	sv->acquire.seek_quadrature[band]   = malloc(acquire_bitmap_size_u32*4);
+	if(sv->acquire.seek_quadrature[band]==NULL)
+	{
+            printf("Out of memory for sv->seek_quadrature[]\n");
+            return 0;            
+        }
 	}
 }
-}
+
+
 
 
 printf("Gold codes");
@@ -509,15 +574,80 @@ generateGoldCodes();
 printf("Stretched_Gold_codes \n");
 stretchGoldCodes();
 
-for(i=0;i<32;i++)
+
+/*for(i=0;i<32;i++)
 {
-	printf("\n  stretched gold codes for %d satellite  \n",i);
-	for(j=0;j<acquire_bitmap_size_u32 ;j++)
+	  printf("\n  stretched codes for %d satellite  \n",i+1);
+	for(int j=0;j<acquire_bitmap_size_u32;j++)
 	{
 		printBinary(space_vehicles[i].acquire.gold_code_stretched[j]);
 	}
+}*/
+
 }
+
+static void add_to_bitmap(uint_32 *bitmap, int s)
+{
+  int i;
+  for(i = samples_for_acquire/32; i > 0; i--) 
+  {
+     bitmap[i] <<= 1;
+     if(bitmap[i-1]&0x80000000)
+        bitmap[i]++;
+  }
+  bitmap[i] <<= 1;
+  if(s)
+     bitmap[i]++;
+}
+
+
+
+static void gps_process_sample(int s)
+{
+	int sv;
+	static int prime =0;
+	static int processed = 0;
+	printf(" %d",prime);
+
+	if(prime%2 == 0)
+	{
+		add_to_bitmap(sample_history_I,s);
+	}
+	else
+	{
+		add_to_bitmap(sample_history_Q,s);
+	}
+
+	if(prime < 2*samples_for_acquire)
+	{
+		if(prime == 0)
+		{
+			printf("starting to prime sample history \n");
+		}
+		prime++;
+		if(prime == 2*samples_for_acquire)
+		{
+			printf("History primed with %i samples (%i milliseconds of data)\n", samples_for_acquire, ms_for_acquire);
+		}
+
+
+		return;
+	}
+
+
+
+        /*case(acq)
+	//acquire(sample_history)
+	//break;
+	//
+	//case*/
+
+
+
 }
 	
+
+
+
 
 

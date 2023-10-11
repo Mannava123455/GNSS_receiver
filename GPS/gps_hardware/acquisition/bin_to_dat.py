@@ -19,9 +19,16 @@ def read_binary_file(file_path):
 # Example usage:
 file_path = 'gpssim.bin'
 bits = read_binary_file(file_path)
+#bits=np.fromfile(file_path,np.int8)
+np.savetxt("bin.dat",bits)
 I=bits[0::2]
 Q=bits[1::2]
+i=np.array(I)
+q=np.array(Q)
 
+data=i|q
+
+np.savetxt("data.dat",data)
 
 
 # Print the list of bits
