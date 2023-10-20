@@ -101,7 +101,7 @@ int main(int argc, char *argv[]) {
     ****************************/
     const int fc = 4092000; // or 1364000
     const int fs = 5456000;
-    const char *in = "gps.bin";
+    const char *in = "iq_if.bin";
     const int ms  = 8;    // Length of data to process (milliseconds)
     const int Start = 0;
 
@@ -126,33 +126,20 @@ int main(int argc, char *argv[]) {
     static char sample_data[Len+7];
     int i, j, ch;
 
-    FILE *fp = fopen(in, "rb");
+    FILE *fp = fopen(in, "r");
     if (!fp) { perror(in); return 0; }
     fseek(fp, Start, SEEK_SET);
 
     for (i=0; i<Len; i+=8) 
-      {
+    {
         ch = fgetc(fp);
-        for (j=0; j<8; j++)
+        for (j=0; j<8; j++) 
 	{
             sample_data[i+j] = ch&1;
             ch>>=1;
         }
     }
 
-    /*for (i = 0; i < Len; i += 8)
-    {
-    ch = fgetc(fp);
-    if (ch == EOF)
-    {
-        break;
-    }
-    for (j = 7; j >= 0; j--)
-    {  // Reverse the order of bit extraction
-        sample_data[i + (7 - j)] = (ch >> j) & 1;
-    }
-
-    }*/
     fclose(fp);
 
 
@@ -190,9 +177,6 @@ int main(int argc, char *argv[]) {
                 ca.Clock();
             }
         }
-
-
-
 
         /******************************************
         * Now run the FFT on the C/A code stream  *
@@ -237,7 +221,7 @@ int main(int argc, char *argv[]) {
         /************************************************
         * Test at different doppler shifts (+/- 5kHz)
         ************************************************/
-        for (int dop=-7000*Len/fs; dop<=7000*Len/fs; dop++) {
+        for (int dop=-5000*Len/fs; dop<=5000*Len/fs; dop++) {
             double max_pwr=0, tot_pwr=0;
             int max_pwr_i;
 

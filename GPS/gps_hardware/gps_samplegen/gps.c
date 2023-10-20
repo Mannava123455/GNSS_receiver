@@ -11,15 +11,15 @@
 
 int main()
 {
-//	int sample_rate=5456000;
-//	int if_freq= 4092000;
-	int sample_rate=2040000;
-	int if_freq= 0;
+	//int sample_rate=5456000;
+	int if_freq= 4092000;
+	int sample_rate=5456000;
+//	int if_freq= 0;
 	gps_setup(sample_rate,if_freq);
-	//const char *file_name = "gps.bin";
-	const char *file_name = "iq.bin";
+//	const char *file_name = "gps.bin";
+	const char *file_name = "iq_if.bin";
 	FILE *fiq;
-	fiq=fopen(file_name,"rb");
+	fiq=fopen(file_name,"r");
 	if(fiq==NULL)
 	{
 		perror("Error inka poyyi paduko");
@@ -27,7 +27,7 @@ int main()
 	}
 
 	int c;
-	while((c=getc(fiq)) !=EOF)
+	while((c=fgetc(fiq)) !=EOF)
 	{
 		for(int i=0;i<8;i++)
 		{

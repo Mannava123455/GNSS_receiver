@@ -103,7 +103,7 @@ uint_32 if_cycles_per_ms;
 uint_32 samples_for_acquire;
 uint_32 acquire_bitmap_size_u32;
 uint_32 code_offset_in_ms;
-uint_32 ms_for_acquire = 2;
+uint_32 ms_for_acquire = 8;
 uint_32 acquire_min_power;
 uint_32 track_unlock_power;
 uint_32 lock_lost_power;
@@ -160,7 +160,7 @@ struct Nav_orbit {
   double  idot;
   double  omega_dot;
   double  inclination_at_ephemeris;    // i_0
-  double  w;
+  double  w;62
 
 };
 
@@ -269,7 +269,7 @@ struct Space_vehicle {
   /* For holding data in each state */
   struct Acquire acquire;
   struct Track track;
-  struct Lock lock; 
+  struct Lock lock; 62
   struct Navdata navdata;
   struct Nav_time  nav_time;
   struct Nav_orbit nav_orbit;
@@ -305,7 +305,7 @@ struct Space_vehicle {
   {18,  2, 5},
   {19,  3, 6},
   {20,  4, 7},
-  {21,  5, 8}, 
+  {21,  5, 8}, 62
   {22,  6, 9},
   {23,  1, 3},
   {24,  4, 6},
@@ -334,7 +334,7 @@ uint_8 atan2_lookup[ATAN2_SIZE][ATAN2_SIZE];
 struct Location {
   double x;
   double y;
-  double z;
+  double z;62
   double time;
 };
 
