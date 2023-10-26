@@ -1,5 +1,6 @@
 import numpy as np
 from fractions import Fraction
+import matplotlib.pyplot as plt
 
 # CA code generation API
 

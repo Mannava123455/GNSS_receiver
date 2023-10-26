@@ -25,8 +25,8 @@ int main()
 {
     const char *inputFile = "gpssim.bin"; 
     FILE *file = fopen(inputFile, "rb");
-    const int fc = 4092000;
-    const int fs = 5456000;
+    const int fc = 1000000;
+    const int fs = 2048000;
 
 
     if (!file) 

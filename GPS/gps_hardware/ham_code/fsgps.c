@@ -150,7 +150,7 @@ uint_32 if_cycles_per_ms;
 uint_32 samples_for_acquire;
 uint_32 acquire_bitmap_size_u32;
 uint_32 code_offset_in_ms;
-uint_32 ms_for_acquire = 2;
+uint_32 ms_for_acquire = 4;
 uint_32 acquire_min_power;
 uint_32 track_unlock_power;
 uint_32 lock_lost_power;
@@ -2175,7 +2175,8 @@ static void gps_process_sample(int s) {
     }
 #endif
  
- if(processed % (samples_per_ms*SHOW_SOLUTION_MS) == 0) {
+ if(processed % (samples_per_ms*SHOW_SOLUTION_MS) == 0)
+  {
      struct Snapshot s;
      snapshot_timing(&s);
      attempt_solution(&s);
@@ -2494,7 +2495,10 @@ static void usage(char *message) {
 /*********************************************************************
 * Main program - check parameters, open file and process samples
 *********************************************************************/
-int main(int argc, char *argv[]) {
+int main(int argc, char *argv[]) 
+{
+	
+  clock_t begin = clock();
   int upto = 1;
   int sample_rate = 16368000, if_freq = 4092000, offset = 0;
   FILE *f;
@@ -2623,6 +2627,9 @@ while (c != EOF)
     fclose(position_file);
   fclose(f);
   printf("%lli samples processed\n",sample_count);
+  clock_t end=clock();
+  double time_spent = (double)(end-begin)/CLOCKS_PER_SEC;
+  printf("\n The program took %f seconds to run . \n ",time_spent);
   return 0;
 }
 /*********************************************************************
