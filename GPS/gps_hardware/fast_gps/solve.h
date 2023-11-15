@@ -11,7 +11,7 @@ static void snapshot_timing(struct Snapshot *s)
     
     
     if(heading == 0) {
-       printf("Id,  State, Orbt, Time, WeekNo, FrameOfWeek, msOfFrame, ChipOfCode, fracOfChip\n");
+      // printf("Id,  State, Orbt, Time, WeekNo, FrameOfWeek, msOfFrame, ChipOfCode, fracOfChip\n");
     }
     heading++;
     if(heading == 49)
@@ -49,7 +49,7 @@ static void snapshot_timing(struct Snapshot *s)
             s->entries[i].nav_subframe_in_frame = sv->navdata.subframe_in_frame;
             s->entries[i].nav_valid_bits        = sv->navdata.valid_bits;
         }
-        fwrite(s, sizeof(struct Snapshot), 1, snapshot_file);
+        //fwrite(s, sizeof(struct Snapshot), 1, snapshot_file);
     }
 #if SHOW_TIMING_SNAPSHOT_DETAILS            
     for(i = 0; i < N_SV; i++) {

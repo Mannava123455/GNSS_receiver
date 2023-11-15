@@ -4,7 +4,7 @@ import matplotlib.pyplot as plt
 import gpssim as navs
 
 codeFreqBasis = 1.023e6
-sampleRate = 2.04e6
+sampleRate = 2.048e6
 samplePeriod = 1/sampleRate
 
 codeTable = navs.genGpsCaTable(sampleRate)
@@ -44,10 +44,11 @@ for istep in range(numSteps):
     if (istep+1)*timeStep >= acqIntegTime and state == "ACQ":
         acqBuffer = data[0: (istep+1)*samplePerStep]
         acqBufferLen = len(acqBuffer)
+        print(acqBufferLen)
 
         # Acqusition doppler search space
-        fMin = -25000
-        fMax = 25000
+        fMin = -5000
+        fMax = 5000
         fStep = 200
         fSearch = np.arange(fMin, fMax+fStep, fStep)
 
@@ -61,7 +62,7 @@ for istep in range(numSteps):
                                             codeTable[np.arange(0, acqBufferLen)%codeTableSampCnt, prnId-1], 
                                             sampleRate, 
                                             fSearch,
-                                            threshold=2,
+                                            threshold=3,
                                             relative_peak=True
                                         )   
             delaySamp = codePhase
@@ -102,5 +103,55 @@ for istep in range(numSteps):
     if(state == "TRK"):
         for i in range(satVis):
             y[istep, i], fqyerr[istep, i], fqynco[istep, i], pherr[istep, i], phnco[istep, i], delayerr[istep, i], delaynco[istep, i] = tracker[i].stepImpl(waveform)
+
+for i in range(satVis):
+    
+    plt.subplot(6, 1, 1)
+    plt.plot(fqyerr[:, i])
+    plt.ylim(0,50)
+    plt.xlabel('time')
+    plt.ylabel('Fqy Error')
+    
+
+    plt.subplot(6, 1, 2)
+    plt.plot(fqynco[:, i])
+    plt.xlabel('time')
+    plt.ylabel('Fqy NCO')
+
+    plt.subplot(6, 1, 3)
+    plt.plot(pherr[:, i])
+    plt.xlabel('time')
+    plt.ylabel('Phase Error')
+
+    plt.subplot(6, 1, 4)
+    plt.plot(phnco[:, i])
+    plt.xlabel('time')
+    plt.ylabel('Phase NCO')
+
+    plt.subplot(6, 1, 5)
+    plt.plot(delayerr[:, i])
+    plt.xlabel('time')
+    plt.ylabel('Delay Error')
+
+    plt.subplot(6, 1, 6)
+    plt.plot(delaynco[:, i])
+    plt.xlabel('time')
+    plt.ylabel('Delay NCO')
+    plt.title(format(tracker[i].PRNID))
+    plt.show()
+        
+for i in range(satVis):
+    resultId = tracker[i].PRNID
+    print(resultId)
+    satIdx = list(satId).index(resultId)
+    print(satIdx)
+
+    mapbit = lambda y: np.piecewise(np.imag(y), [np.imag(y) < 0, np.imag(y) >= 0], [0, 1])
+    mapbitinv = lambda y: np.piecewise(np.imag(y), [np.imag(y) < 0, np.imag(y) >= 0], [1, 0])
+
+    print("Prompt I branch:\n", mapbit(y[:, i]))
+    print("Prompt I branch inverted:\n", mapbitinv(y[:, i]))
+
+
 
     

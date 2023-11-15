@@ -47,11 +47,11 @@ static void acquire(struct Space_vehicle *sv)
        } else {
           sv->acquire.max_power = 0;           
        }
-       printf("%02i: Max power %7i at band %2i, offset %5i %s\n", 
+       /*printf("%02i: Max power %7i at band %2i, offset %5i %s\n", 
               sv->id,
             sv->acquire.max_power,
             sv->acquire.max_band,
             sv->acquire.max_offset,
-            sv->state == state_tracking ? "TRACKING" : "");       
+            sv->state == state_tracking ? "TRACKING" : ""); */      
    }
 }

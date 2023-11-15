@@ -2,6 +2,7 @@ import numpy as np
 from fractions import Fraction
 from sk_dsp_comm import fec_conv as fec     #pip/pip3 install scikit-dsp-comm
 import sk_dsp_comm.digitalcom as dc
+import matplotlib.pyplot as plt
 
 # CA code generation API
 #Initial condition of register G2 taken from NavIC ICD
@@ -570,7 +571,25 @@ def navic_pcps_acquisition(x, prnSeq, fs, fSearch, threshold=0):
 
     powIn = np.mean(np.abs(x)**2)
     sMax = np.abs(Rxd[maxRow, maxCol])**2
-    thresholdEst = 2*K*sMax/powIn
+    thresholdEst = 2*K*sMax/powIn 
+    l=np.abs(Rxd)**2
+    time_values = np.arange(10230)
+    X, Y = np.meshgrid(time_values, fSearch)
+    fig = plt.figure()
+    ax = fig.add_subplot(111, projection='3d')
+    cmap = plt.get_cmap('jet')  # You can use other colormaps as well
+    norm = plt.Normalize(l.min(), l.max())
+    colors = cmap(norm(l))
+    surf = ax.plot_surface(X, Y, l.T, cmap=cmap)
+
+    ax.set_xlabel('Time')
+    ax.set_ylabel('Doppler Frequency')
+    ax.set_zlabel('Rxd')
+    ax.set_zlim(0,0.02)
+    ax.set_title('3D Plot of Matrix Data with Doppler Frequencies')
+    fig.colorbar(surf, ax=ax, shrink=0.5, aspect=10)
+    plt.show()
+    
 
     if(thresholdEst > threshold):
         tau = maxRow
@@ -737,12 +756,13 @@ class NavicTracker:
         # Buffer the input
         integtime = self.PLLIntegrationTime*1e-3 # PLLIntegrationTime is in milliseconds. Hence multiply by 1e-3 to get it into sec
         [u, self.pBuffer] = np.split(np.append(self.pBuffer, u), [round(self.SampleRate*integtime)])
+        [localbuf, buf] = np.split(np.append(self.pBuffer, np.zeros(len(u))), [round(self.SampleRate*integtime)]) 
 
         # Carrier wipe-off
         fc = self.CenterFrequency + self.InitialDopplerShift - self.pFLLNCOOut
         t = np.arange(self.pNumIntegSamples+1)/self.SampleRate
         phases = 2*np.pi*fc*t + self.pPreviousPhase - self.pPLLNCOOut
-        iqsig = u * np.exp(-1j*phases[:-1])
+        iqsig = localbuf * np.exp(-1j*phases[:-1])
         self.pPreviousPhase = phases[-1] + self.pPLLNCOOut
 
         # Code wipe-off

@@ -1,104 +1,43 @@
 #include <memory.h>
+
+
+
 #define SHOW_TIMING_SNAPSHOT_FREQ_MS     (20)
-
-/* How often should an attempt to solve for position be made */
 #define SHOW_SOLUTION_MS              (20)
-
-/*******************************************************************
-* Constants based on the GPS signals for decoding BPSK data
-*******************************************************************/
-/* How many 'chips' are sent each milliseconds */
 #define CHIPS_PER_MS              (1023)
-/* Each BPSH bit is MS_PER_BIT milliseconds long */
 #define MS_PER_BIT                (20)
 #define BIT_LENGTH                (MS_PER_BIT)
-
-/* There are BITS_PER_FRAME bits in each NAV frame */
 #define BITS_PER_FRAME            (300)
-
-/* How many unexpected phase transitions will we receive
-   until we consider the signal lost */
 #define MAX_BAD_BIT_TRANSITIONS   (500)
-
-
-/*******************************************************************
-* Factors that control the feedback loops for tracking the signals
-*******************************************************************/
-/* The factor used to smooth the early and late power levels */
 #define LATE_EARLY_IIR_FACTOR      16
-
-/* Filter constants for the angle and change in angle 
-* used for carrier locking */
 #define LOCK_DELTA_IIR_FACTOR       8
 #define LOCK_ANGLE_IIR_FACTOR       8
-
-/*******************************************************************
-* To print out debugging information
-*******************************************************************/
-/* Print the ATAN2 lookup table as it is generated */
 #define PRINT_ATAN2_TABLE           0
-
-
-/* Set PRINT_SAMPLE_NUMBERS to 1 to Print out the number
-*  of samples processed every PRINT_SAMPLE_FREQUENCY */
 #define PRINT_SAMPLE_NUMBERS        0
 #define PRINT_SAMPLE_FREQUENCY   1000
-
-/* Set PRINT_ACQUIRE_POWERS to 1 to see the power levels 
-*  during the acqusition phase. Powers less than
-*  PRINT_ACQUIRE_SQUETCH are not printed */
 #define PRINT_ACQUIRE_POWERS        0
 #define PRINT_ACQUIRE_SQUETCH   50000
-
-/* Set PRINT_TRACK_POWER to '1' to print out the 
-* power levels during the track phase */
 #define PRINT_TRACK_POWER           0
 #define PRINT_TRACK_SQUETCH         0
-
-/* Print out if a space vheicle falls out of lock */
-#define SHOW_LOCK_UNLOCK        1
-
-/* Do we show the code NCO values? */
+#define SHOW_LOCK_UNLOCK        0
 #define PRINT_LOCKED_NCO_VALUES     0
-
-/* Show the initial values used for the NCOs when a lock
-*  is obtained */
-#define LOCK_SHOW_INITIAL           1
-
-/* Show the power levels each millisecond */
+#define LOCK_SHOW_INITIAL           0
 #define LOCK_SHOW_PER_MS_POWER      0
-
-/* Show each bit as it is received */
 #define LOCK_SHOW_PER_BIT           0
-
-/* Show the state of the late/early filters */
 #define LOCK_SHOW_EARLY_LATE_TREND  0
-
-/* Show the I+Q power levels each millisecond */
 #define LOCK_SHOW_PER_MS_IQ         0
-
-/* Show the I+Q vector each millisecond */
 #define LOCK_SHOW_ANGLES            0
-
-/* Show each BSPK Bit is it is received */
 #define LOCK_SHOW_BITS              0
 #define LOCK_SHOW_BPSK_PHASE_PER_MS 0
 #define SHOW_NAV_FRAMING            0
-
-/* Do we want to print out each timing snapshot */
-#define SHOW_TIMING_SNAPSHOT_DETAILS      1
-
-/* Do we want to write the snapshots to a file, for later analysis? */
-#define LOG_TIMING_SNAPSHOT_TO_FILE      1
-#define LOG_POSITION_FIX_TO_FILE         1
-
-/* Add extra checks to make sure nothing is awry */
+#define SHOW_TIMING_SNAPSHOT_DETAILS      0
+#define LOG_TIMING_SNAPSHOT_TO_FILE      0
+#define LOG_POSITION_FIX_TO_FILE         0
 #define DOUBLECHECK_PROMPT_CODE_INDEX    0
-/*************************************************************/
-/******************** END OF DEFINES *************************/
-/*************************************************************/
 
-/* Standard data types */
+
+
+
 typedef int                int_32;
 typedef unsigned int       uint_32;
 typedef unsigned char      uint_8;
@@ -110,7 +49,7 @@ uint_32 if_cycles_per_ms;
 uint_32 samples_for_acquire;
 uint_32 acquire_bitmap_size_u32;
 uint_32 code_offset_in_ms;
-uint_32 ms_for_acquire = 4;
+uint_32 ms_for_acquire = 2;
 uint_32 acquire_min_power;
 uint_32 track_unlock_power;
 uint_32 lock_lost_power;
@@ -379,6 +318,5 @@ struct Snapshot {
 #define WGS84_E2    (0.00669437999014132)
 #define OMEGA_E     (7.2921151467e-5)  /* Earth's rotation rate */
 
-///////////////////////////////////////////////////////////////////////////////////////////////
 
 #define NUM_CHANS 10

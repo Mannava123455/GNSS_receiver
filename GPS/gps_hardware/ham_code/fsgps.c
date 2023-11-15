@@ -150,7 +150,7 @@ uint_32 if_cycles_per_ms;
 uint_32 samples_for_acquire;
 uint_32 acquire_bitmap_size_u32;
 uint_32 code_offset_in_ms;
-uint_32 ms_for_acquire = 4;
+uint_32 ms_for_acquire = 2;
 uint_32 acquire_min_power;
 uint_32 track_unlock_power;
 uint_32 lock_lost_power;

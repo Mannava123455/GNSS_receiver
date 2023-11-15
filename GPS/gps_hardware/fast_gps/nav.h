@@ -125,7 +125,7 @@ static void nav_save_frame(struct Space_vehicle *sv)
     printf(" %08X", unflipped[i]);
   printf("\n");
 
-  if(frame_type > 0 && frame_type < 6) {
+  /*if(frame_type > 0 && frame_type < 6) {
       if(sv->nav_file == NULL) {
           char name[100];
           sprintf(name, "NAV_%02i.dat",sv->id);
@@ -142,7 +142,7 @@ static void nav_save_frame(struct Space_vehicle *sv)
           fwrite(sv->navdata.new_subframe,sizeof(sv->navdata.new_subframe),1,sv->nav_file);
           fflush(sv->nav_file);
       }
-  }
+  }*/
       
   if(frame_type == 1) {
     sv->navdata.valid_subframe[1] = 1;
@@ -351,7 +351,7 @@ static void nav_new_bit(struct Space_vehicle *sv, uint_8 s)
 
 static void nav_abandon(struct Space_vehicle *sv) 
 {
-    printf("%2i: Abandon - %5i errors\n", sv->id, sv->navdata.bit_errors);
+   // printf("%2i: Abandon - %5i errors\n", sv->id, sv->navdata.bit_errors);
     sv->navdata.valid_bits = 0;
     sv->navdata.synced = 0;
     /* Force drop if we havn't got a good bit after 'n' transistions */

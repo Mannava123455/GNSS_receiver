@@ -1,0 +1,316 @@
+\documentclass[journal,10pt,onecolumn]{article}
+\usepackage{graphicx}
+\usepackage[margin=0.5in]{geometry}
+\usepackage{amsmath}
+\usepackage{array}
+\usepackage{booktabs}
+\usepackage{listings}
+\usepackage{titlesec}
+\usepackage[utf8]{inputenc}
+\usepackage{amsmath}
+\usepackage{amsfonts} 
+\usepackage[linesnumbered,ruled,vlined]{algorithm2e}
+\providecommand{\norm}[1]{\left\lVert#1\right\rVert}
+\providecommand{\abs}[1]{\left\vert#1\right\vert}
+\usepackage{enumerate}
+\let\vec\mathbf
+\newcommand{\myvec}[1]{\ensuremath{\begin{pmatrix}#1\end{pmatrix}}}
+\newcommand{\mydet}[1]{\ensuremath{\begin{vmatrix}#1\end{vmatrix}}}
+\providecommand{\brak}[1]{\ensuremath{\left(#1\right)}}
+\titleformat{\section}[block]{\centering\large\bfseries}{}{0pt}{}
+
+\lstset{
+frame=single,
+breaklines=true,
+columns=fullflexible
+}
+
+\begin{document}
+\section*{GPS Signal Description}
+
+\begin{enumerate}
+
+    \item The baseband signal \textbf{transmited} by the satellite is given as 
+    \begin{equation}
+        S(t) = S_{PPS}(t)+ jS_{SPS}(t)
+    \end{equation} 
+    \begin{enumerate}
+        \item[$\bullet$]  $S_{SPS}(t) = 	\sum_{i=-\infty}^{\infty}  c_{sps}(|i|_{L\_sps}) . d([i]_{CD\_sps}) . rect_{T_{c,sps}}(t-iT_{c,sps})$ --- Standard Positioning Service
+        \item[$\bullet$] $S_{PPS}(t) = 	\sum_{i=-\infty}^{\infty}  c_{pps}(|i|_{L\_pps}) . d([i]_{CD\_pps}) . rect_{T_{c,pps}}(t-iT_{c,pps}) $ ----   Precision Positioning Service
+    \end{enumerate}
+    \item Let $x_{in}[n]$ be the incoming signal at the \textbf{receiver} end and is given as
+	\begin{equation}
+        x_{in}[n] = A(t) s_T(t-\tau (t))e^{j(2\pi f_D (t)t+\phi (t))}|_{t=nT_s}  + n(t)\vert _{t=nT_s}
+    \end{equation}
+    where \\
+    \begin{enumerate}
+        \item[$\bullet$] $A(t)$ is Amplitude
+        \item[$\bullet$] $s_T(t)$ is Complex baseband signal
+        \item[$\bullet$] $\tau(t)$ is code delay(time varying)
+        \item[$\bullet$] $f_D(t)$ is Doppler shift(time varying)
+        \item[$\bullet$] $\phi(t)$ is carrier phase shift(time varying)
+        \item[$\bullet$]  $n(t)$ is Random noise with zero mean
+        \item[$\bullet$] $T_s$ is Sampling period
+        \item[$\bullet$] $f_s$ is Sampling frequency
+    \end{enumerate}
+\end{enumerate}
+
+
+\section{Pseudo code for GPS Signal Acquisition}
+
+\subsection{Functions for computing the PRN codes of GPS satellite}
+\begin{enumerate}
+    \item 
+    \begin{enumerate}
+    \item g1$\_$lfsr()
+    \begin{enumerate}
+    \item[] state = 0x3FF
+    \item[] Declare an array out[1023]
+    \item[] \textbf{for} \textbf{i}=0 to \textbf{i}=1022
+        \begin{enumerate}
+            \item[] out[\textbf{i}] = (state $\gg$ 9) \& 0x1 
+            \item[] new$\_$bit = ((state $\gg$ 9) $\oplus$ (state $\gg$ 2)) $\&$ 0x1
+            \item[] state = ((state $\ll$ 1) $\vert$  new$\_$bit) $\&$ 0x3FF
+        \end{enumerate}
+    \item[] \textbf{end for}
+    \end{enumerate}
+    \item[] return out
+    
+
+    \item g2$\_$lfsr(tap0,tap1)
+    \begin{enumerate}
+        \item[] state = 0x3FF
+        \item[] Declare an array out[1023]
+        \item[] tap0 = tap0-1
+        \item[] tap1 = tap1-1 
+        \item[] \textbf{for} \textbf{i}=0 to \textbf{i}=1022
+        \begin{enumerate}
+            \item[] out[\textbf{i}] = ((state $\gg$ tap0) $\oplus$ (state $\gg$ tap1)) $\&$ 0x1
+            \item[] new$\_$bit =  ((state $\gg$ 9) $\oplus$ (state $\gg$ 8) $\oplus$
+            (state $\gg$ 7) $\oplus$ (state $\gg$ 5) $\oplus$
+            (state $\gg$ 2) $\oplus$ (state $\gg$ 1)) $\&$ 0x1
+            \item[] state = ((state $\ll$ 1) $\vert$ new$\_$bit) $\&$ 0x3FF
+        \end{enumerate}
+        \item[] \textbf{end for}
+    \end{enumerate}
+    \item[] return out
+
+
+
+
+    \item combine$\_$g1$\_$g2(g1,g2)
+    \begin{enumerate}
+        \item[] declare out[1023]
+        \item[] \textbf{for} \textbf{i}=0 to \textbf{i}=1022
+        \begin{enumerate}
+            \item[] out[\textbf{i}] = g1[\textbf{i}] $\oplus$ g2[\textbf{i}]
+        \end{enumerate}
+        \item[]  \textbf{end for}
+    \end{enumerate}
+    \item[]  return out
+
+
+\end{enumerate}
+\end{enumerate}
+
+\subsection{Main function}
+\begin{enumerate}
+
+\item PRN Code frequency $f_c$ is 1.023Mhz
+\item Sampling frequency $f_s$ is 2.048Mhz
+\item The number of samples \textbf{N} for 1ms is 2048 
+    \item[] /* Array to store Phase selector values for 32 satellites - 2 values per satellite*/
+    \item Static array SVs[64] = [2, 6,
+    3, 7,
+    4, 8,
+    5, 9,
+    1, 9,
+    2,10,
+    1, 8,
+    2, 9,
+    3,10,
+    2, 3,
+    3, 4,
+    5, 6,
+    6, 7,
+    7, 8,
+    8, 9,
+    9,10,
+    1, 4,
+    2, 5,
+    3, 6,
+    4, 7,
+    5, 8, 
+    6, 9,
+    1, 3,
+    4, 6,
+    5, 7, 
+    6, 8,
+    7, 9,
+    8,10,
+    1, 6,
+    2, 7,
+    3, 8,
+    4, 9]
+    \item Static array g1[1023]
+    \item static array g2[32][1023]
+    \item g1 =  g1$\_$lfsr()  /* Fucntion call */
+    \item k=0
+    \item visibile$\_$satellites = 0 \\ \\
+    \item[] /* Generating PRN code for all 32 satellites  */
+	\item \textbf{for} \textbf{sv}=01 to \textbf{sv}=32: 
+	
+	\begin{enumerate}
+    \renewcommand{\labelenumii}{\roman{enumii}}
+        \item[] tap0 = SVs[k++]
+        \item[] tap1 = SVs[k++]
+        \item[] g2[\textbf{sv}] = g2$\_$lfsr(tap0,tap1)   /* Fucntion call */
+        \item[] gold$\_$code = combine$\_$g1$\_$g2(g1,g2)  /* Fucntion call */
+        \item[] \item[] /*BPSK modulation of PRN code */
+        \item[] \textbf{For} \textbf{i} = 0 to \textbf{i} = 1022
+        
+        \begin{enumerate}
+            \item[] if gold$\_$code[\textbf{i}] $>$  0 
+            \begin{enumerate}
+                \item[]  gold$\_$code[\textbf{i}] = -1
+            \end{enumerate}
+            \item[] else
+            \begin{enumerate}
+                \item[]  gold$\_$code[\textbf{i}] = 1
+            \end{enumerate}
+        \end{enumerate} 
+    /* Upsampling the PRN code */
+
+        \item[] \textbf{for} \textbf{i} = 0 to \textbf{i} = N-1
+        \begin{enumerate}
+            \item[] c[\textbf{sv}][i] = gold$\_$code[\textbf{i}.$\frac{fc}{fs}$]
+        \end{enumerate}
+        
+    \end{enumerate}
+    \item[] \textbf{end for}
+    \item[] \item Capture 2ms samples of incoming signal $x_{in}[n]$
+    \item Calculate received signal power using the formula
+    \item[] $P_x=0$
+    \item[] \textbf{for} i=0 to N-1
+    \begin{enumerate}
+        \item[] $P_x= P_x+\abs{x_{in}[i]}^2$
+    \end{enumerate} 
+    \item The power of incoming signal should be $P_x$$>$$\vartheta $
+    \begin{enumerate}
+        \item[] $\vartheta$ = $\frac{\sum_{n = 1}^{4}X_i}{4}$
+        \begin{enumerate}
+            \item[] $X_i$ represents Signal powers at gain =\{0,27,47\} and noise
+        \end{enumerate}
+    \end{enumerate}  
+    
+    \item Initialize the array max$\_$values[5] = $\{0\}$
+    \item Initialize the array max$\_$row$\_$indices[5] = $\{0\}$
+    \item Initialize the array max$\_$indices[5] = $\{0\}$
+    \item \textbf{for} \textbf{sv}=01 to \textbf{sv}=32
+    
+    \begin{enumerate}
+        \item[] Initialize max = 0
+        \item[] Initialize max$\_$index = 0
+        \item[] \textbf{for} \textbf{n} = 0 to \textbf{n} = N-1
+        \begin{enumerate}
+            \item[] $z{_{\textbf{sv}}}[\textbf{n}] = \sum_{m = 0}^{N-1}c[\textbf{sv}][m]x_{in}[\textbf{n}+m]$  
+            \item[] $z{_{\textbf{sv}}}[\textbf{n}]$ = $\{{\operatorname{Re}(z{_{\textbf{sv}}}[\textbf{n}])}\}^2$
+            \item[] if $z{_{\textbf{sv}}}[\textbf{n}]$ $>$ max
+            \begin{enumerate}
+                \item[] max = $z{_{\textbf{sv}}}[\textbf{n}]$
+                \item[] max$\_$index = \textbf{n}
+            \end{enumerate}
+        \end{enumerate}
+        \item[] \textbf{end for}
+
+        \item[] \textbf{for} \textbf{i} = 0 to \textbf{i} = 4
+        \begin{enumerate}
+            \item[] \textbf{if} max $>$ max$\_$values[\textbf{i}]
+            \begin{enumerate}
+                \item[] \textbf{for} \textbf{j} = 4 to \textbf{j} = \textbf{i}-1
+                \begin{itemize}
+                    \item[] max$\_$values[\textbf{j}] = max$\_$values[\textbf{j}-1]
+                    \item[] max$\_$row$\_$indices[\textbf{j}] = max$\_$row$\_$indices[\textbf{j}-1]
+                    \item[] max$\_$indices[\textbf{j}] = max$\_$indices[\textbf{j}-1]
+                    \item[] \textbf{j} = \textbf{j}-1
+                \end{itemize} 
+                \item[] \textbf{end for}
+                \item[] max$\_$values[\textbf{i}] = max
+                \item[] max$\_$row$\_$indices[\textbf{i}] = \textbf{sv}
+                \item[]  max$\_$indices[\textbf{i}] = max$\_$index
+                \item[] break the loop
+            \end{enumerate}
+            \item[] \textbf{end if}
+        \end{enumerate}
+        \item[] \textbf{end for}
+    \end{enumerate}
+    \item[] \textbf{end for}
+    
+
+    \item  \textbf{for} \textbf{sv} = 0  to \textbf{sv} = 4
+    \begin{enumerate}
+        \item[] Code phase $\hat{\tau}_{\textbf{sv}}$ = max$\_$indices[\textbf{sv}]
+        \item[] \textbf{For} \textbf{i} = 0 to \textbf{i} = N-1
+            \begin{enumerate}
+                \item[]  x[\textbf{i}] = $x_{in}[\textbf{i}+\hat{\tau}_{\textbf{sv}}]$
+            \end{enumerate}
+            \item[] \textbf{end for}
+            \item[] Initialize max$\_$of$\_$max=0
+            \item[] \textbf{for} \textbf{$f_D$} = $f_{min}$ to \textbf{$f_D$} $= f_{max}$ in $f_{step}$ steps:
+            \begin{enumerate}
+                \item[] Shift the signal $x[n]$ by $f_D$, for n = 0 to N-1
+                \begin{equation}
+                    x_{sh}[n] = x[n]\cdot e ^{-j 2 \pi f_D n T_s} 
+                \end{equation}
+                \item[] Apply FFT to $x_{sh}[n]$ $\longrightarrow$ $X_{sh}[k]$
+                \item[] \textbf{for} n = 0 to n = N-1
+                \begin{enumerate}
+                    \item[] $P_{\textbf{sv}}[n]$ = c[max$\_$row$\_$indices[\textbf{sv}]][n] 
+                \end{enumerate}
+                \item[] \textbf{end for}
+                
+                \item[] Compute conjugate of FFT of $p_{\textbf{sv}}[n]$ $\longrightarrow $  $P_{\textbf{sv}}^*[k ]$
+            \item[] Multiply $X_{sh}[k]$ and $P_{\textbf{sv}}^*[k ]$.
+                \begin{equation}
+                    Y[k] = X_{sh}[k] \cdot P_{\textbf{sv}}^*[k]                
+                \end{equation}
+            \item[] Compute IFFT for $Y[k]$
+                \begin{equation}
+                    R_{\textbf{sv}}[n] =  IFFT_k \{Y[k] \} 
+                \end{equation}
+            \item[] Initialize max$\_$value = 0
+            \item[] Initialize max$\_$fd    = 0
+            \item[] \textbf{for} \textbf{i} = 0 to \textbf{i} = N-1
+            \begin{itemize}
+                \item[] $R{_{\textbf{sv}}}[\textbf{i}]$ = $\{\operatorname{Re}(R{_{\textbf{sv}}}[\textbf{i}])\}^2$.
+            \end{itemize}
+            
+          
+            \begin{itemize}
+                \item[] \textbf{if}  ($R{_{\textbf{sv}}}[\textbf{i}] >  max$\_$value$) $\&\&$ ($R{_{\textbf{sv}}}[\textbf{i}]> max$\_$of$\_$max$)
+                \begin{itemize}
+                    \item[] max$\_$value = $R{_{\textbf{sv}}}[\textbf{i}]$
+                    \item[] max$\_$fd    = \textbf{i}
+                \end{itemize}
+                \item[] \textbf{end if}
+            \end{itemize} 
+            \item[] \textbf{end for}
+            \item[]  max$\_$of$\_$max = max$\_$value
+            \end{enumerate}
+            \item[] \textbf{end for}
+            \item[]Doppler Frequency offset $f_{sv_D}$ = max$\_$fd
+            \end{enumerate}
+        \item[] \textbf{end for}
+    \end{enumerate}
+
+    
+    
+    
+
+
+  
+    
+    
+
+
+\end{document}

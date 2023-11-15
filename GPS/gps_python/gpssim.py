@@ -141,6 +141,8 @@ def navic_pcps_acquisition(x, prnSeq, fs, fSearch, threshold=0, relative_peak=Fa
     maxIndex = np.argmax(Rxd[0:M, :])
     maxCol = maxIndex%N
     maxRow = maxIndex//N
+    
+    
 
     if(relative_peak):
         L = round(fs/1.023e6)
@@ -164,6 +166,25 @@ def navic_pcps_acquisition(x, prnSeq, fs, fSearch, threshold=0, relative_peak=Fa
     if(thresholdEst > threshold):
         tau = maxRow
         fDev = fSearch[maxCol]
+
+        l=np.abs(Rxd)**2
+        time_values = np.arange(K)
+        X, Y = np.meshgrid(time_values, fSearch)
+        fig = plt.figure()
+        ax = fig.add_subplot(111, projection='3d')
+        cmap = plt.get_cmap('jet')  # You can use other colormaps as well
+        norm = plt.Normalize(l.min(), l.max())
+        colors = cmap(norm(l))
+        surf = ax.plot_surface(X, Y, l.T, cmap=cmap)
+        ax.set_xlabel('Time')
+        ax.set_ylabel('Doppler Frequency')
+        ax.set_zlabel('Rxd')
+        ax.set_title('3D Plot of Matrix Data with Doppler Frequencies')
+        ax.set_zlim(0, 5)
+        fig.colorbar(surf, ax=ax, shrink=0.5, aspect=10)
+        plt.show()
+    
+        
         return True, tau, fDev, thresholdEst
     else:
         return False, 0, 0, thresholdEst
@@ -312,6 +333,7 @@ class NavicTracker:
         # Buffer the input
         integtime = self.PLLIntegrationTime*1e-3 # PLLIntegrationTime is in milliseconds. Hence multiply by 1e-3 to get it into sec
         [u, self.pBuffer] = np.split(np.append(self.pBuffer, u), [round(self.SampleRate*integtime)])
+        
 
         # Carrier wipe-off
         fc = self.CenterFrequency + self.InitialDopplerShift - self.pFLLNCOOut

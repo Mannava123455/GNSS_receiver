@@ -1,5 +1,5 @@
 echo "GPS samples are generating at the given location "
-./gps-sdr-sim -e brdc0010.22n  -s 2048000 -b 1 -d 50 -l 17.5910123,78.1212902,100
+./gps-sdr-sim -e brdc0010.22n  -s 2048000 -b 1 -d 40 -l 17.5947,78.1230,100
 
 
 echo "GPS samples are generated at 1bit IQ "
