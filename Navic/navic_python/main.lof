@@ -1,0 +1,30 @@
+\addvspace {10\p@ }
+\addvspace {10\p@ }
+\contentsline {figure}{\numberline {2.1}{\ignorespaces Frequency bands of NavIC Signals\relax }}{3}{figure.caption.4}%
+\contentsline {figure}{\numberline {2.2}{\ignorespaces NavIC Architecture\relax }}{9}{figure.caption.6}%
+\contentsline {figure}{\numberline {2.3}{\ignorespaces the NavIC bands segment blocks\relax }}{10}{figure.caption.7}%
+\addvspace {10\p@ }
+\contentsline {figure}{\numberline {3.1}{\ignorespaces Transmitter Block diagram\relax }}{12}{figure.caption.8}%
+\contentsline {figure}{\numberline {3.2}{\ignorespaces Master Frame Structure\relax }}{13}{figure.caption.9}%
+\contentsline {figure}{\numberline {3.3}{\ignorespaces Structure of subframe 1 and 2\relax }}{14}{figure.caption.10}%
+\contentsline {figure}{\numberline {3.4}{\ignorespaces Structure of subframe 3 and 4\relax }}{14}{figure.caption.11}%
+\contentsline {figure}{\numberline {3.5}{\ignorespaces SPS PRN Code Generator\relax }}{15}{figure.caption.12}%
+\contentsline {figure}{\numberline {3.6}{\ignorespaces FEC Encoding\relax }}{16}{figure.caption.14}%
+\addvspace {10\p@ }
+\addvspace {10\p@ }
+\contentsline {figure}{\numberline {5.1}{\ignorespaces The Block Level Architecture for Receiver\relax }}{31}{figure.caption.17}%
+\contentsline {figure}{\numberline {5.2}{\ignorespaces PCPS algorithm flow\relax }}{33}{figure.caption.19}%
+\contentsline {figure}{\numberline {5.3}{\ignorespaces Tracking block diagram\relax }}{36}{figure.caption.20}%
+\contentsline {figure}{\numberline {5.4}{\ignorespaces Generic baseband processor code and carrier tracking loops block diagram\relax }}{38}{figure.caption.21}%
+\contentsline {figure}{\numberline {5.5}{\ignorespaces The Block Level Architecture for Channel decoding\relax }}{43}{figure.caption.23}%
+\contentsline {figure}{\numberline {5.6}{\ignorespaces Trellis flow for Viterbi algorithm\relax }}{46}{figure.caption.24}%
+\addvspace {10\p@ }
+\contentsline {figure}{\numberline {6.1}{\ignorespaces PSD plot of sv1\relax }}{50}{figure.caption.25}%
+\contentsline {figure}{\numberline {6.2}{\ignorespaces PSD plot of sv2\relax }}{50}{figure.caption.26}%
+\contentsline {figure}{\numberline {6.3}{\ignorespaces PSD plot of sv3\relax }}{51}{figure.caption.27}%
+\contentsline {figure}{\numberline {6.4}{\ignorespaces PSD plot of sv4\relax }}{51}{figure.caption.28}%
+\contentsline {figure}{\numberline {6.5}{\ignorespaces error plot of sv1\relax }}{52}{figure.caption.29}%
+\contentsline {figure}{\numberline {6.6}{\ignorespaces error plot of sv2\relax }}{53}{figure.caption.30}%
+\contentsline {figure}{\numberline {6.7}{\ignorespaces error plot of sv3\relax }}{54}{figure.caption.31}%
+\contentsline {figure}{\numberline {6.8}{\ignorespaces error plot of sv4\relax }}{55}{figure.caption.32}%
+\addvspace {10\p@ }

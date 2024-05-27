@@ -1,0 +1,28 @@
+\BOOKMARK [0][-]{chapter*.2}{Introduction}{}% 1
+\BOOKMARK [0][-]{chapter.1}{Design Parameters}{}% 2
+\BOOKMARK [1][-]{section.1.1}{The Frequency Bands}{chapter.1}% 3
+\BOOKMARK [2][-]{subsection.1.1.1}{Special Positioning Service \(SPS\):}{section.1.1}% 4
+\BOOKMARK [2][-]{subsection.1.1.2}{Restricted Service \(RS\):}{section.1.1}% 5
+\BOOKMARK [0][-]{chapter.2}{Channel Modelling}{}% 6
+\BOOKMARK [1][-]{section.2.1}{Doppler shift}{chapter.2}% 7
+\BOOKMARK [1][-]{section.2.2}{Delay}{chapter.2}% 8
+\BOOKMARK [1][-]{section.2.3}{Power Scaling}{chapter.2}% 9
+\BOOKMARK [1][-]{section.2.4}{Thermal noise}{chapter.2}% 10
+\BOOKMARK [0][-]{chapter.3}{Transmitter}{}% 11
+\BOOKMARK [1][-]{section.3.1}{Frame structure}{chapter.3}% 12
+\BOOKMARK [2][-]{subsection.3.1.1}{Cyclic Redundancy Check\(CRC\)}{section.3.1}% 13
+\BOOKMARK [1][-]{section.3.2}{Encoding}{chapter.3}% 14
+\BOOKMARK [2][-]{subsection.3.2.1}{Interleaving}{section.3.2}% 15
+\BOOKMARK [2][-]{subsection.3.2.2}{Sync word and Tail bits}{section.3.2}% 16
+\BOOKMARK [1][-]{section.3.3}{Modulation}{chapter.3}% 17
+\BOOKMARK [2][-]{subsection.3.3.1}{Standard Positioning Service}{section.3.3}% 18
+\BOOKMARK [2][-]{subsection.3.3.2}{Pseudo Random Noise codes\(PRN\)}{section.3.3}% 19
+\BOOKMARK [2][-]{subsection.3.3.3}{Baseband Modulation}{section.3.3}% 20
+\BOOKMARK [0][-]{chapter.4}{Receiver}{}% 21
+\BOOKMARK [1][-]{section.4.1}{RTL SDR}{chapter.4}% 22
+\BOOKMARK [2][-]{subsection.4.1.1}{Radio block diagram for L5 band signal receiver}{section.4.1}% 23
+\BOOKMARK [2][-]{subsection.4.1.2}{Results}{section.4.1}% 24
+\BOOKMARK [1][-]{section.4.2}{USRP SDR}{chapter.4}% 25
+\BOOKMARK [2][-]{subsection.4.2.1}{SDR specification}{section.4.2}% 26
+\BOOKMARK [2][-]{subsection.4.2.2}{Radio block diagram for L5 band signal receiver}{section.4.2}% 27
+\BOOKMARK [2][-]{subsection.4.2.3}{Results}{section.4.2}% 28

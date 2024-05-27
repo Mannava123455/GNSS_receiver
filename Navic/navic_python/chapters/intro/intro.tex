@@ -1,0 +1,47 @@
+%\documentclass{article}
+
+%\usepackage{amssymb, amsfonts,amsthm,amsmath}
+%\usepackage{enumitem}
+%\usepackage{hyperref,xcolor}
+
+%\def\inputGnumericTable{}
+%\usepackage{array}
+%\usepackage{longtable}
+%\usepackage{calc}
+%\usepackage{multirow}
+%\usepackage{hhline}
+%\usepackage{ifthen}
+
+
+
+%\begin{document}
+%\title{Details of the NavIC frequency bands }
+%\author{\Large Shreyash Putta - FWC22070}
+%\date{}
+
+%\maketitle
+
+NavIC (an acronym for 'Navigation with Indian Constellation') is the operational name for Indian Regional Navigation Satellite System (IRNSS), developed independently and indigenously by Indian Space Research Organization (ISRO). The objective of this autonomous regional satellite navigation system is to provide accurate real-time positioning and timing services to users in India and a region extending upto $1,500$ km ($930$ mi) around it. 
+\\
+\\
+NavIC is designed with a constellation of $7$ satellites and a network of ground stations operating $24$ x $7$. Three satellites of the constellation
+are placed in geostationary orbit and four satellites are placed in inclined geosynchronous orbit. The ground network consists of control centre, precise timing facility, range and integrity monitoring stations, two-way ranging stations, etc.
+\\
+\\
+NavIC provides two levels of service, the "standard positioning service", which is open for civilian use, and a "restricted service" (an encrypted one) for authorised users (including the military). NavIC has a theoritical positional accuracy of $5$m - $20$m for general users and $0.5$m for military purposes.
+\\
+\\
+This book describes the NavIC standards simulation using Python code. Chapter 2  provides NavIC system overview, various frequency bands used and various services provided by NavIC. Chapter 3 describes the implementation details of Transmitter module. Chapter 4 details about various channeling parameters used in simulation. Chapter 5 elaborately describes the implementation details of Receiver module. Chapter 6 details out key results from the simulation.   
+\\
+\\
+\section{Scope of simulation}	
+The scope of the simulation is limited to 
+\begin{enumerate}
+	\item sending baseband signal (without a carrier) thorugh transmitter module, mixing it with channel modelling module and verifying that the same baseband signal is received at the output of the receiver module. 
+	\item baseband signals for L5 and S bands (L1 band is out of scope)
+	\item only SPS services signal (RS signal is out of scope) 
+\end{enumerate}
+
+
+
+%\end{document}

@@ -1,0 +1,48 @@
+The NavIC transmitter module is simulated to generate the real time navigation data and generating the real time baseband samples for the NavIC L5 constellation.
+
+
+\section{Inputs to the Transmitter module}
+\begin{enumerate}
+	\item Rinex file that contains the navigation data of all the satellites in the NavIC L5 constellation.
+	\begin{enumerate}
+		\item The user specifies the NavIC satellite constellation through a NavIC broadcast ephemeris file. The daily NavIC broadcast ephemeris file (brdc) is a merge of the individual site navigation files into one. 
+		\item The archive for the daily file can be downloaded from below site. Access to this site requires registration, which is free. 
+		\item[] \begin{lstlisting}
+			https://cddis.nasa.gov/archive/gnss/data/daily/
+		\end{lstlisting}
+		\item These files are then used to generate the simulated pseudorange and Doppler for the NavIC satellites in view. This simulated range data is then used to generate the digitized I/Q samples for the NavIC signal.
+	\end{enumerate}
+	\item Sampling frequency of the generated baseband samples.
+	\item Time duration in seconds.
+	\item size of each sample.(There is a flexibility of 1 bit, 8 bits and 16 bits)
+	\begin{enumerate}
+		\item The output of the transmiter module is a bin file that contain the IQ samples with the given sampling frequency and given size of samples.
+		\item If the bit size is 8 I samples will take 8 bits and Q samples will take 8 bits.
+		\item There is a flexibility of size of samples to 1bit,8bits and 16 bits.
+	\end{enumerate}
+	\item Receiver location in terms of latitude,longitude,altitude.
+\end{enumerate}
+
+
+\section{Output of the Transmitter module}
+\begin{enumerate}
+	\item The bin file containg the NavIC L5 IQ samples corresponds to the given inputs. 
+	\begin{enumerate}
+		\item The bin file will be generated as output.The bin file contains the NavIC baseband IQ samples corresponds to the input receiver location.
+		\item The transmitter module will give the bin file that contains the navigation data of satellites that are visible to the input receiver location with the real time doppler frequency and the real time codephase and carrier phase.
+	\end{enumerate}
+\end{enumerate}
+
+
+\section{Up conversion of Baseband samples to the L5 frequency}
+\begin{enumerate}
+\item The samples from the transmitter module is given to the frontend.The frontend will upconvert the basband signals to the L5 frequency and send the signals to the air through antenna.
+\item The samples from the transmitter is in the form of I + jQ
+\item In the NavIC L5 constellation In phase part is SPS service. and Quadrature part contains the RS service.
+\item In the front end I sample is multiplied with cosine signal and Q sample is multiplied with sine signal with L5 frequency.
+\end{enumerate}
+
+\begin{align}
+    x(t) = I \cos(2\pi f_c t) + Q \sin(2\pi f_c t)
+\end{align}
+

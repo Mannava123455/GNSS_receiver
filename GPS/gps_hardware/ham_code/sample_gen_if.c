@@ -1,5 +1,6 @@
 #include <stdio.h>
 #include <stdlib.h>
+#include <math.h>
 
 void convertToLittleEndian(const unsigned char *data, int dataLength, unsigned char *result)
 {
@@ -21,6 +22,38 @@ void convertToLittleEndian(const unsigned char *data, int dataLength, unsigned c
     }
 }
 
+void addNoiseAndQuantize(unsigned char *iSamples, unsigned char *qSamples, int* noisyISamples, int* noisyQSamples, int len, double snr) {
+    double temp;
+    double noiseScale = sqrt(0.5 / pow(10, -snr / 10.0));
+
+    for (int i = 0; i < len; i++) {
+        // Adding noise to I sample
+        temp = 0;
+        for (int j = 0; j < 12; j++) {
+            temp += (double)rand() / RAND_MAX;
+        }
+        temp -= 6;
+        double noiseI = noiseScale * temp;
+        double noisyI = iSamples[i] + noiseI;
+
+        // Quantize I sample to 1-bit
+        noisyISamples[i] = (noisyI >= 0) ? 1 : 0;
+
+        // Adding noise to Q sample
+        temp = 0;
+        for (int j = 0; j < 12; j++) {
+            temp += (double)rand() / RAND_MAX;
+        }
+        temp -= 6;
+        double noiseQ = noiseScale * temp;
+        double noisyQ = qSamples[i] + noiseQ;
+
+        // Quantize Q sample to 1-bit
+        noisyQSamples[i] = (noisyQ >= 0) ? 1 : 0;
+
+    }
+
+}
 int main() 
 {
     const char *inputFile = "gpssim.bin"; 
@@ -71,37 +104,55 @@ int main()
     unsigned char *I = (unsigned char *)malloc(fileSize * 4);
     unsigned char *Q = (unsigned char *)malloc(fileSize * 4);
     unsigned char *result = (unsigned char *)malloc(fileSize/2);
+    int *noise_I     = (int *)malloc(fileSize*4);
+    int *noise_Q     = (int *)malloc(fileSize*4);
+
+    printf("\nfilesize = %ld ",fileSize);
+
+
 
     if (!even) 
     {
         perror("Memory allocation error");
-        free(data);
+        free(even);
         return 1;
     }
 
     if (!odd) 
     {
         perror("Memory allocation error");
-        free(data);
+        free(odd);
         return 1;
     }
 
     if (!sum) 
     {
         perror("Memory allocation error");
-        free(data);
+        free(sum);
         return 1;
     }
     if (!I) 
     {
         perror("Memory allocation error");
-        free(data);
+        free(I);
         return 1;
     }
     if (!Q) 
     {
         perror("Memory allocation error");
-        free(data);
+        free(Q);
+        return 1;
+    }
+    if (!noise_I) 
+    {
+        perror("Memory allocation error");
+        free(noise_I);
+        return 1;
+    }
+    if (!noise_Q) 
+    {
+        perror("Memory allocation error");
+        free(noise_Q);
         return 1;
     }
 
@@ -173,10 +224,16 @@ int main()
     }
 
 
+printf("\n before \n");
+//addNoiseAndQuantize(I,Q,noise_I, noise_Q,fileSize*4,-22);
+printf("\n after \n");
+
+
 
     for(int i=0;i<fileSize*4;i++)
     {
 	    sum[i]=I[i] | Q[i];
+        sum[i] = noise_I[i] | noise_Q[i];
     }
 
 
@@ -207,7 +264,7 @@ int main()
     }
     printf("\n");
 
-FILE *f = fopen("iq_if.bin", "wb");
+FILE *f = fopen("iq_if_baseband_without_noise.bin", "wb");
     if (!f) 
     {
         perror("File open error");
@@ -225,17 +282,23 @@ FILE *f = fopen("iq_if.bin", "wb");
 
     // Close the output file
     fclose(f);
-
     // Don't forget to free the allocated memory
    // unsigned char result[fileSize];
    //convertToLittleEndian(data, fileSize, result);
     free(data);
+printf("\n I am here 1 \n");
     free(even);
+printf("\n I am here 2 \n");
     free(odd);
-    free(I);
-    free(Q);
-    free(sum);
-    free(data_buff);
+printf("\n I am here 3 \n");
+   // free(I);
+printf("\n I am here 4 \n");
+   // free(Q);
+printf("\n I am here 5 \n");
+    //free(sum);
+printf("\n I am here 6 \n");
+    //free(data_buff);
+printf("\n I am here 7 \n");
 
     return 0;
 }

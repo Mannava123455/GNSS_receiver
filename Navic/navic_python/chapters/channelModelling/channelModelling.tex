@@ -1,0 +1,140 @@
+The phenomena modelled in the satellite communication channel are 
+\begin{enumerate}
+   \item Doppler shift
+   \item Delay 
+   \item Power scaling and 
+   \item Thermal noise at the receiver
+\end{enumerate}
+
+\section{Doppler shift}
+Due to relative motion between the satellites and the receiver, the transmitted signals undergo a frequency shift before arriving at the receiver. This shift %
+in frequency is called Doppler shift and can be computed as
+\begin{equation}
+    f_{shift} = f_{d}-f_{c} = \brak{\frac{V_{rel}}{c-V_{S,dir}}}f_{c}  
+\end{equation}
+where,
+
+$f_{shift}$ = Frequency shift due to Doppler effect
+
+$f_{d}$ = Frequency observed at receiver
+
+$f_{c}$ = Carrier frequency at transmitter
+
+$V_{rel}$ = Relative velocity of transmitter and receiver
+
+$V_{S,dir}$ = Velocity of satellite along radial direction
+
+$c$ = Speed of light
+\\
+
+$V_{rel}$ is given by
+\begin{align}
+    V_{rel} &= V_{S,dir} - V_{R,dir}
+\end{align}
+where,
+
+$V_{R,dir}$ = Velocity of receiver along radial direction
+
+$V_{R,dir}$ and $V_{S,dir}$ are given by
+\begin{align}
+    V_{R,dir} &= \vec{V}_{R} \cdot \hat{\vec{dir}}\\
+    V_{D,dir} &= \vec{V}_{S} \cdot \hat{\vec{dir}}
+\end{align}
+where,
+
+$\hat{\vec{dir}}$ = Unit vector from satellite to receiver i.e. radial direction
+
+$\vec{V_{S}}$ = Velocity of satellite
+
+$\vec{V_{R}}$ = Velocity of receiver
+
+$\hat{\vec{dir}}$ is given by
+\begin{align}
+    \hat{\vec{dir}} = \frac{\vec{P_{S}}-\vec{P_{R}}}{\norm{\vec{P_{S}}-\vec{P_{R}}}}
+\end{align}
+where,
+
+$\vec{P_{S}}$ = Position of satellite
+
+$\vec{P_{R}}$ = Position of receiver
+
+
+The Doppler shift is introduced by muliplying the satellite signal with a complex exponential,
+\begin{equation}
+    x_{Shift}\sbrak{n} = x\sbrak{n}e^{-2 \pi j \brak{f_{c}+f_{Shift}} n t_{s}}
+\end{equation}
+where,
+
+$x_{Shift}\sbrak{n}$ = Doppler shifted signal
+
+$x\sbrak{n}$ = Satellite signal
+
+$t_{s}$ = Sampling period
+
+\section{Delay}
+Since there is a finite distance between the satellite and the receiver, the signal at the reciever is a delayed version of the transmitted signal. This delay is given by
+\begin{equation}
+    D_{s} = \frac{d}{c}f_{s} 
+\end{equation}
+where,
+
+$D_{s}$ = Total delay in samples
+
+$d$ = Distance between satellite and receiver
+
+$c$ = Speed of light
+
+$f_{s}$ = Sampling rate
+
+The total delay on the satellite signal is modeled in two steps. First, a static delay is modeled which does not change with time and it is always an integer number of samples. Then, %
+a variable delay is modeled which can be a rational number of samples. While modelling the static delay, the entire delay is not introduced so that variable delay modelling handles the remaining %
+delay.
+
+To introduce the static delay, the samples are read from a queue whose size is the desired static delay length. When samples are read from the queue, an equal number of new samples are %
+updated in the queue. To introduce the variable delay, the signal is passed through an all-pass FIR filter with an almost constant phase response. Its coefficients are calculated %
+using the delay value required.
+
+\section{Power Scaling}
+When a transmitting antenna transmits radio waves to a receiving antenna, the radio wave power received is given by,
+\begin{equation}
+    P_r = P_t D_t D_r \brak{\frac{1}{4 \pi \brak{f_c + f_{Shift}} D}}^2
+\end{equation}
+where,
+
+$P_r$ = Received power
+
+$P_t$ = Transmitted power
+
+$D_t$ = Directivity of transmitting antenna 
+
+$D_r$ = Directivity of receiving antenna 
+
+$D$ = Total delay in seconds
+
+To scale the received signal as per the received power calculated,
+\begin{equation}
+    x_{Scaled}\sbrak{n} = \frac{\sqrt{P_r}}{\operatorname{rms}\brak{x\sbrak{n}}}x\sbrak{n}
+\end{equation}   
+
+\section{Thermal noise}
+The thermal noise power at the receiver is given by,
+\begin{equation}
+    N_r = k T B
+\end{equation}
+where,
+
+$N_r$ = Noise power in watts
+
+$k$ = Boltzmann's constant
+
+$T$ = Temperature in Kelvin
+
+$B$ = Bandwidth in Hz
+
+AWGN (Additive White Guassian Noise) samples with zero mean and variance $N_r$ are generated and added to the satellite signal to model thermal noise at receiver.
+
+The functions necessary to model the channel are present in the below code,
+\begin{lstlisting}
+    codes/channelmodel/channelmodel.py
+\end{lstlisting}
+\let\cleardoublepage\clearpage

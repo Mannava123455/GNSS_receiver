@@ -167,22 +167,22 @@ def navic_pcps_acquisition(x, prnSeq, fs, fSearch, threshold=0, relative_peak=Fa
         tau = maxRow
         fDev = fSearch[maxCol]
 
-        l=np.abs(Rxd)**2
-        time_values = np.arange(K)
-        X, Y = np.meshgrid(time_values, fSearch)
-        fig = plt.figure()
-        ax = fig.add_subplot(111, projection='3d')
-        cmap = plt.get_cmap('jet')  # You can use other colormaps as well
-        norm = plt.Normalize(l.min(), l.max())
-        colors = cmap(norm(l))
-        surf = ax.plot_surface(X, Y, l.T, cmap=cmap)
-        ax.set_xlabel('Time')
-        ax.set_ylabel('Doppler Frequency')
-        ax.set_zlabel('Rxd')
-        ax.set_title('3D Plot of Matrix Data with Doppler Frequencies')
-        ax.set_zlim(0, 5)
-        fig.colorbar(surf, ax=ax, shrink=0.5, aspect=10)
-        plt.show()
+        # l=np.abs(Rxd)**2
+        # time_values = np.arange(K)
+        # X, Y = np.meshgrid(time_values, fSearch)
+        # fig = plt.figure()
+        # ax = fig.add_subplot(111, projection='3d')
+        # cmap = plt.get_cmap('jet')  # You can use other colormaps as well
+        # norm = plt.Normalize(l.min(), l.max())
+        # colors = cmap(norm(l))
+        # surf = ax.plot_surface(X, Y, l.T, cmap=cmap)
+        # ax.set_xlabel('Time')
+        # ax.set_ylabel('Doppler Frequency')
+        # ax.set_zlabel('Rxd')
+        # ax.set_title('3D Plot of Matrix Data with Doppler Frequencies')
+        # ax.set_zlim(0, 5)
+        # fig.colorbar(surf, ax=ax, shrink=0.5, aspect=10)
+        # plt.show()
     
         
         return True, tau, fDev, thresholdEst
@@ -326,6 +326,7 @@ class NavicTracker:
                     # Remove samples from pBuffer itself
                     self.pBuffer = self.pBuffer[abs(numextradelay):]
                 else:
+                    
                     n = numSamplesPerCodeBlock + numextradelay
                     self.pBuffer = np.concatenate([np.zeros(n), self.pBuffer])
         
@@ -337,6 +338,7 @@ class NavicTracker:
 
         # Carrier wipe-off
         fc = self.CenterFrequency + self.InitialDopplerShift - self.pFLLNCOOut
+        #print(fc)
         t = np.arange(self.pNumIntegSamples+1)/self.SampleRate
         phases = 2*np.pi*fc*t + self.pPreviousPhase - self.pPLLNCOOut
         iqsig = u * np.exp(-1j*phases[:-1])

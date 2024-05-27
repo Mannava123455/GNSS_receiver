@@ -21,7 +21,7 @@ FLLNoiseBandwidth = 4  # In Hz
 DLLNoiseBandwidth = 1  # In Hz
 
 
-cevafile = "/home/mannava/gps_sdr/gps-sdr-sim/gpssim.bin"
+cevafile = "/home/mannava/module_3/GPS/gps_transmitter/gpssim.bin"
 data = np.fromfile(cevafile, dtype=np.int8)
 data_I = data[0::2]; data_Q = data[1::2]
 data = data_I + 1j*data_Q
@@ -57,6 +57,7 @@ for istep in range(numSteps):
         
         # Perform acquisition for each satellite
         for prnId in satId:
+        #for i in range(0,1):
             status, codePhase, doppler, peakMetric = navs.navic_pcps_acquisition(
                                             acqBuffer, 
                                             codeTable[np.arange(0, acqBufferLen)%codeTableSampCnt, prnId-1], 
@@ -105,10 +106,12 @@ for istep in range(numSteps):
             y[istep, i], fqyerr[istep, i], fqynco[istep, i], pherr[istep, i], phnco[istep, i], delayerr[istep, i], delaynco[istep, i] = tracker[i].stepImpl(waveform)
 
 for i in range(satVis):
-    
+
+    plt.suptitle(f'Subplots for PRNID {tracker[i].PRNID}')  # Main title for all subplots
+    plt.tight_layout()  # Adjust layout to prevent overlapping
     plt.subplot(6, 1, 1)
     plt.plot(fqyerr[:, i])
-    plt.ylim(0,50)
+    # plt.ylim(-200,200)
     plt.xlabel('time')
     plt.ylabel('Fqy Error')
     
@@ -137,7 +140,7 @@ for i in range(satVis):
     plt.plot(delaynco[:, i])
     plt.xlabel('time')
     plt.ylabel('Delay NCO')
-    plt.title(format(tracker[i].PRNID))
+    
     plt.show()
         
 for i in range(satVis):

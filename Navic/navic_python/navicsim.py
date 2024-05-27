@@ -573,7 +573,7 @@ def navic_pcps_acquisition(x, prnSeq, fs, fSearch, threshold=0):
     sMax = np.abs(Rxd[maxRow, maxCol])**2
     thresholdEst = 2*K*sMax/powIn 
     l=np.abs(Rxd)**2
-    time_values = np.arange(10230)
+    time_values = np.arange(K)
     X, Y = np.meshgrid(time_values, fSearch)
     fig = plt.figure()
     ax = fig.add_subplot(111, projection='3d')
@@ -739,6 +739,7 @@ class NavicTracker:
         coarsedelay = round(self.pNumSamplesToAppend)    # Me added round()
         numSamplesPerCodeBlock = self.SampleRate * 1e-3  # As each code block is of 1e-3 seconds
         finedelay = round(self.pDLLNCOOut * self.pSamplesPerChip)
+        #print(finedelay)
         
         if len(self.pBuffer) != coarsedelay + finedelay:
             numextradelay = coarsedelay + finedelay - len(self.pBuffer)

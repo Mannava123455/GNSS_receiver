@@ -1,0 +1,59 @@
+%\section{Computing the position and velocity of the  NavIC satellite using python}
+\section{Installations}
+
+\begin{lstlisting}
+pip3 install pymap3d
+pip3 install georinex
+pip3 install itertools
+pip3 install argparse
+\end{lstlisting}
+
+\section{Algorithm}
+Algorithm for finding the position and velocity of satellite From Rinex file
+\begin{enumerate}
+  \item Get the rinex file for NavIC satellite from the official website.
+  \item The Rinex file contains the observational file and navigation file.
+  \item Convert the Rinex file to CSV file using the python \\
+  The below python function will convert the NavIC RINEX file to CSV file.
+  \begin{lstlisting}
+    codes/sat_pos_vel/rinex_to_csv/funcs.py
+  \end{lstlisting}
+  \item Remove the empty rows in csv file.The python function for removing empty rows is 
+  \begin{lstlisting}
+    codes/sat_pos_vel/rinex_to_csv/funcs.py
+  \end{lstlisting}
+  \item Convert the csv file to list in python so that each row is corresponds to the parameters of the satellite. Function for converting the csv file to list is given as :
+  \begin{lstlisting}
+    codes/sat_pos_vel/rinexread/funcs.py
+  \end{lstlisting} 
+  \item Process the above list with the formulas mentioned in chaprter 3 \\
+  The python function for finding the position of satellite is given as :
+  \begin{lstlisting}
+    codes/sat_pos_vel/position/funcs.py
+  \end{lstlisting}
+  \item The velocity of the satellte is computed by the function 
+  \begin{lstlisting}
+    codes/sat_pos_vel/velocity/funcs.py
+  \end{lstlisting}
+  \item The distance between the satellite and receiver is obtained by the python package called \textbf{pymap3d},using this package convert ECEF to spherical coordinate frame.So that we obtain the distance between satellite and receiver.
+  \item These position and velocity of the satellite is used for computing the doppler shift.
+\end{enumerate}
+\vspace{5mm}
+The above alogorith will work for both GPS and NavIC satellite.If there is a problem in converting Navic RINEX file to csv file then follow the instructions below:
+\begin{enumerate}
+\item go to the mentioned folder in your laptop.
+\begin{lstlisting}
+  ./home/username/.local/lib/python3.10/site-packages/georinex/nav3.py
+\end{lstlisting}
+\item Go to the line 220 in nav3.py file and modify the below changes.
+\begin{lstlisting}
+  elif numval == 29:  # only one trailing spare fields
+            cf = cf[:-2]
+        elif numval == 28:  # only one trailing spare fields
+            cf = cf[:-3]
+        elif numval == 27:  # only one trailing spare fields
+            cf = cf[:-4]
+        elif numval == 26:  # only one trailing spare fields
+            cf = cf[:-5]
+\end{lstlisting}
+\end{enumerate}

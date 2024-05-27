@@ -1,0 +1,27 @@
+The signal transmitted from the transmiited frontend is received by the receiver frontend and down convert the samples to baseband and feed it to the receiver module.
+
+\section{Down conversion of received signal to baseband}
+\begin{enumerate}
+    \item The transmitted signal was received by the antenna at the receiver and processed by the receiver front end.
+    \item Let the received signal be x(t)
+    \begin{align}
+        x(t) &= I \cos(2\pi f_c t) + Q \sin(2\pi f_c t)
+    \end{align}
+    \item[] where $f_c$ is L5 frequency i.e 1176.45 MHz.
+    \item The signal will be downconverted to baseband when we multiply the signal with the frequency of same signal.
+    \begin{align}
+        y(t) &= x(t)e^{-j2\pi f_c t} \\
+        y(t) &=  (I \cos(2\pi f_c t) + Q \sin(2\pi f_c t))(\cos(2\pi f_c t) - j\sin(2\pi f_c t))
+    \end{align}
+    \begin{align}
+        y(t) = (I \cos^2(2 \pi f_ct) + Q \sin(2 \pi f_c t) \cos(2 \pi f_c t)) + j(Q \sin^2(2 \pi f_ct)-I \sin(2 \pi f_c t) \cos(2 \pi f_c t))
+    \end{align}
+
+    \item Apply low pass filter to the above signal so high frequency components are removed at the output of lowpass filter.
+    \item The out of low pass filter is 
+    \begin{align}
+        y(t) = I + jQ
+    \end{align}
+
+    \item The received samples are now down converted to the baseband and feed it to the receiver module.
+\end{enumerate}

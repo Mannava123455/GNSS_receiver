@@ -1,5 +1,7 @@
 #include <stdio.h>
 #include <stdlib.h>
+#include <math.h>
+
 
 void convertToLittleEndian(const unsigned char *data, int dataLength, unsigned char *result)
 {
@@ -25,6 +27,7 @@ void convertToLittleEndian(const unsigned char *data, int dataLength, unsigned c
 
 void processDataFile(const char *inputFile, const char *outputFile, int fc, int fs)
 {
+	
     FILE *inputFilePtr = fopen(inputFile, "rb");
     if (!inputFilePtr) {
         perror("File open error");
@@ -52,17 +55,29 @@ void processDataFile(const char *inputFile, const char *outputFile, int fc, int 
     unsigned char *even = (unsigned char *)malloc(buffer_size * 4);
     unsigned char *odd = (unsigned char *)malloc(buffer_size * 4);
     unsigned char *sum = (unsigned char *)malloc(buffer_size * 4);
-    unsigned char *I = (unsigned char *)malloc(buffer_size * 4);
+    unsigned char *I = (unsigned char  *)malloc(buffer_size * 4);
     unsigned char *Q = (unsigned char *)malloc(buffer_size * 4);
+    int *noise_I     = (int *)malloc(buffer_size*4);
+    int *noise_Q     = (int *)malloc(buffer_size*4);
+
     unsigned char *result = (unsigned char *)malloc(buffer_size / 2);
     unsigned char *data_buff = (unsigned char *)malloc(buffer_size / 2);
 
-    if (!even || !odd || !sum || !I || !Q || !result)
+    if (!even || !odd || !sum || !I || !Q || !result || !noise_I || !noise_Q)
     {
         perror("Memory allocation error");
         fclose(inputFilePtr);
         fclose(outputFilePtr);
         free(buffer);
+         free(even);
+        free(odd);
+        free(sum);
+        free(I);
+        free(Q);
+        free(result);
+        free(noise_I);
+        free(noise_Q);
+        free(data_buff);
         return;
     }
 
@@ -117,6 +132,10 @@ void processDataFile(const char *inputFile, const char *outputFile, int fc, int 
         }
     }
 
+
+
+
+
     for (int i = 0; i < bytesRead * 4; i++)
     {
         sum[i] = I[i] | Q[i];
@@ -132,10 +151,6 @@ void processDataFile(const char *inputFile, const char *outputFile, int fc, int 
     }
 
     convertToLittleEndian(data_buff, bytesRead / 2, result);
-        // Continue processing...
-        // ...
-
-        // Write the processed data to the output file
         size_t bytesWritten = fwrite(result, 1, bytesRead / 2, outputFilePtr);
         if (bytesWritten != bytesRead / 2)
 	{
@@ -154,6 +169,9 @@ void processDataFile(const char *inputFile, const char *outputFile, int fc, int 
     free(I);
     free(Q);
     free(result);
+    free(noise_I);
+        free(noise_Q);
+        free(data_buff);
 }
 
 int main()

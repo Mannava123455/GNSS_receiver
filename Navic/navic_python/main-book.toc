@@ -1,0 +1,29 @@
+\vskip -8pt
+\contentsline {schapter}{Introduction}{iii}{chapter*.2}%
+\contentsline {chapter}{\numberline {1}Design Parameters}{1}{chapter.1}%
+\contentsline {section}{\numberline {1.1}The Frequency Bands}{1}{section.1.1}%
+\contentsline {subsection}{\numberline {1.1.1}Special Positioning Service (SPS):}{1}{subsection.1.1.1}%
+\contentsline {subsection}{\numberline {1.1.2}Restricted Service (RS):}{2}{subsection.1.1.2}%
+\contentsline {chapter}{\numberline {2}Channel Modelling}{5}{chapter.2}%
+\contentsline {section}{\numberline {2.1}Doppler shift}{5}{section.2.1}%
+\contentsline {section}{\numberline {2.2}Delay}{7}{section.2.2}%
+\contentsline {section}{\numberline {2.3}Power Scaling}{8}{section.2.3}%
+\contentsline {section}{\numberline {2.4}Thermal noise}{9}{section.2.4}%
+\contentsline {chapter}{\numberline {3}Transmitter}{11}{chapter.3}%
+\contentsline {section}{\numberline {3.1}Frame structure}{11}{section.3.1}%
+\contentsline {subsection}{\numberline {3.1.1}Cyclic Redundancy Check(CRC)}{11}{subsection.3.1.1}%
+\contentsline {section}{\numberline {3.2}Encoding}{12}{section.3.2}%
+\contentsline {subsection}{\numberline {3.2.1}Interleaving}{12}{subsection.3.2.1}%
+\contentsline {subsection}{\numberline {3.2.2}Sync word and Tail bits}{12}{subsection.3.2.2}%
+\contentsline {section}{\numberline {3.3}Modulation}{13}{section.3.3}%
+\contentsline {subsection}{\numberline {3.3.1}Standard Positioning Service}{13}{subsection.3.3.1}%
+\contentsline {subsection}{\numberline {3.3.2}Pseudo Random Noise codes(PRN)}{13}{subsection.3.3.2}%
+\contentsline {subsection}{\numberline {3.3.3}Baseband Modulation}{13}{subsection.3.3.3}%
+\contentsline {chapter}{\numberline {4}Receiver}{15}{chapter.4}%
+\contentsline {section}{\numberline {4.1}RTL SDR}{15}{section.4.1}%
+\contentsline {subsection}{\numberline {4.1.1}Radio block diagram for L5 band signal receiver}{16}{subsection.4.1.1}%
+\contentsline {subsection}{\numberline {4.1.2}Results}{17}{subsection.4.1.2}%
+\contentsline {section}{\numberline {4.2}USRP SDR}{18}{section.4.2}%
+\contentsline {subsection}{\numberline {4.2.1}SDR specification}{18}{subsection.4.2.1}%
+\contentsline {subsection}{\numberline {4.2.2}Radio block diagram for L5 band signal receiver}{19}{subsection.4.2.2}%
+\contentsline {subsection}{\numberline {4.2.3}Results}{20}{subsection.4.2.3}%

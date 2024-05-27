@@ -1,2 +1,0 @@
-fast_fsgps : main.c process.c process.h nav.c nav.h solve.c solve.h acquire.c acquire.h gold_codes.h gold_codes.c track.c track.h lock.c lock.h  setup.h
-	gcc -o fast_fsgps main.c process.c nav.c solve.c acquire.c gold_codes.c track.c lock.c -Wall -pedantic -O4 -lm -lncurses

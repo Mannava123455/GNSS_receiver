@@ -5,7 +5,7 @@ from fractions import Fraction
 from mpl_toolkits.mplot3d import Axes3D
 import navicsim as navs
 codeFreqBasis = 1.023e6
-sampleRate = 10*codeFreqBasis
+sampleRate = 2048000
 samplePeriod = 1/sampleRate
 
 simDuration = 10 #48 sec for 2400 symbols #in Seconds
@@ -135,33 +135,38 @@ for istep in range(numSteps):
 
 
 for i in range(satVis):
-    plt.subplot(6, 1, 1)
+    plt.subplot(7, 1, 1)
     plt.plot(fqyerr[:, i])
     plt.xlabel('time')
     plt.ylabel('Fqy Error')
 
-    plt.subplot(6, 1, 2)
+    plt.subplot(7, 1, 2)
     plt.plot(fqynco[:, i])
     plt.xlabel('time')
     plt.ylabel('Fqy NCO')
 
-    plt.subplot(6, 1, 3)
+    plt.subplot(7, 1, 3)
     plt.plot(pherr[:, i])
     plt.xlabel('time')
     plt.ylabel('Phase Error')
 
-    plt.subplot(6, 1, 4)
+    plt.subplot(7, 1, 4)
     plt.plot(phnco[:, i])
     plt.xlabel('time')
     plt.ylabel('Phase NCO')
 
-    plt.subplot(6, 1, 5)
+    plt.subplot(7, 1, 5)
     plt.plot(delayerr[:, i])
     plt.xlabel('time')
     plt.ylabel('Delay Error')
 
-    plt.subplot(6, 1, 6)
+    plt.subplot(7, 1, 6)
     plt.plot(delaynco[:, i])
+    plt.xlabel('time')
+    plt.ylabel('Delay NCO')
+
+    plt.subplot(7, 1, 7)
+    plt.plot(np.imag(y[:, i]))
     plt.xlabel('time')
     plt.ylabel('Delay NCO')
     plt.show()

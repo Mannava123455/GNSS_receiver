@@ -1,0 +1,57 @@
+
+
+\tikzset{every picture/.style={line width=0.75pt}} %set default line width to 0.75pt        
+
+\begin{tikzpicture}[x=0.75pt,y=0.75pt,yscale=-1,xscale=1]
+%uncomment if require: \path (0,300); %set diagram left start at 0, and has height of 300
+
+%Shape: Rectangle [id:dp5040039695529985] 
+\draw   (24,91) -- (94,91) -- (94,131) -- (24,131) -- cycle ;
+%Straight Lines [id:da6707039679717985] 
+\draw    (94.09,111.01) -- (117.09,111.01) ;
+\draw [shift={(119.09,111.01)}, rotate = 180] [color={rgb, 255:red, 0; green, 0; blue, 0 }  ][line width=0.75]    (10.93,-3.29) .. controls (6.95,-1.4) and (3.31,-0.3) .. (0,0) .. controls (3.31,0.3) and (6.95,1.4) .. (10.93,3.29)   ;
+%Shape: Rectangle [id:dp6676087786831228] 
+\draw   (120,91) -- (190,91) -- (190,131) -- (120,131) -- cycle ;
+%Shape: Rectangle [id:dp12552727666705787] 
+\draw   (223,90) -- (293,90) -- (293,130) -- (223,130) -- cycle ;
+%Shape: Rectangle [id:dp041785178904101716] 
+\draw   (281.27,161.01) -- (419.27,161.01) -- (419.27,219.01) -- (281.27,219.01) -- cycle ;
+%Shape: Rectangle [id:dp3930533301018766] 
+\draw   (180,173) -- (250,173) -- (250,213) -- (180,213) -- cycle ;
+%Shape: Rectangle [id:dp6457667866806436] 
+\draw   (39.09,172) -- (113,172) -- (113,212) -- (39.09,212) -- cycle ;
+%Straight Lines [id:da408023078866502] 
+\draw    (190.09,112.01) -- (220.09,112.94) ;
+\draw [shift={(222.09,113.01)}, rotate = 181.79] [color={rgb, 255:red, 0; green, 0; blue, 0 }  ][line width=0.75]    (10.93,-3.29) .. controls (6.95,-1.4) and (3.31,-0.3) .. (0,0) .. controls (3.31,0.3) and (6.95,1.4) .. (10.93,3.29)   ;
+%Straight Lines [id:da20565488006754173] 
+\draw    (339.27,110.01) -- (340.23,160.01) ;
+\draw [shift={(340.27,162.01)}, rotate = 268.9] [color={rgb, 255:red, 0; green, 0; blue, 0 }  ][line width=0.75]    (10.93,-3.29) .. controls (6.95,-1.4) and (3.31,-0.3) .. (0,0) .. controls (3.31,0.3) and (6.95,1.4) .. (10.93,3.29)   ;
+%Straight Lines [id:da606104691567432] 
+\draw    (293,110) -- (339.27,110.01) ;
+%Straight Lines [id:da9255999705919356] 
+\draw    (280.27,191.01) -- (251.27,190.07) ;
+\draw [shift={(249.27,190.01)}, rotate = 1.85] [color={rgb, 255:red, 0; green, 0; blue, 0 }  ][line width=0.75]    (10.93,-3.29) .. controls (6.95,-1.4) and (3.31,-0.3) .. (0,0) .. controls (3.31,0.3) and (6.95,1.4) .. (10.93,3.29)   ;
+%Straight Lines [id:da848136557718163] 
+\draw    (180.27,192.01) -- (114.27,192.01) ;
+\draw [shift={(112.27,192.01)}, rotate = 360] [color={rgb, 255:red, 0; green, 0; blue, 0 }  ][line width=0.75]    (10.93,-3.29) .. controls (6.95,-1.4) and (3.31,-0.3) .. (0,0) .. controls (3.31,0.3) and (6.95,1.4) .. (10.93,3.29)   ;
+%Shape: Rectangle [id:dp6659957800064993] 
+\draw  [dash pattern={on 4.5pt off 4.5pt}] (322.09,186.01) -- (406,186.01) -- (406,214) -- (322.09,214) -- cycle ;
+
+% Text Node
+\draw (26,94) node [anchor=north west][inner sep=0.75pt]  [font=\small] [align=left] {{\scriptsize Convolutional}\\{\scriptsize coding}};
+% Text Node
+\draw (122,94) node [anchor=north west][inner sep=0.75pt]  [font=\footnotesize] [align=left] {{\small Signal }\\{\small transmission}};
+% Text Node
+\draw (230,96) node [anchor=north west][inner sep=0.75pt]  [font=\footnotesize] [align=left] {Channel \\reception};
+% Text Node
+\draw (326,195) node [anchor=north west][inner sep=0.75pt]  [font=\scriptsize] [align=left] {Viterbi decoding};
+% Text Node
+\draw (292,170) node [anchor=north west][inner sep=0.75pt]  [font=\footnotesize] [align=left] {Channel decoding};
+% Text Node
+\draw (187,179) node [anchor=north west][inner sep=0.75pt]  [font=\footnotesize] [align=left] {Error \\correction};
+% Text Node
+\draw (47,178) node [anchor=north west][inner sep=0.75pt]  [font=\footnotesize] [align=left] {Data\\retrieval};
+
+
+\end{tikzpicture}
+

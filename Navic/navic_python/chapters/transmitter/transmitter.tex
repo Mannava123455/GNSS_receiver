@@ -1,0 +1,199 @@
+The NavIC transmitter is simulated to send baseband signal to the channel as shown in Fig \ref{fig:trans_flow}. 
+
+\begin{figure}[ht]
+\centering
+\includegraphics[width=1\columnwidth]{figs/trans_flow.jpg}
+\centering
+\captionsetup{justification=centering}
+\caption{Transmitter Block diagram}
+\label{fig:trans_flow}
+\end{figure}
+
+\section{IRNSS Navigation data}
+Navigation data in satellite communication refers to the crucial information transmitted between satellites and ground-based receivers to facilitate accurate positioning and navigation. It includes data related to satellite orbits, precise timing, and other parameters necessary for determining the satellite's position relative to the Earth's surface.
+\section{Frame structure}
+NavIC master frame consists of $2400$ symbols, divided into $4$ subframes. Each subframe is $600$ symbols long. Each subframe has $16$ bit Sync word followed by $584$ bits of interleaved data. Subframes $1$ and $2$ transmit fixed primary navigation parameters. Subframe $3$ and $4$ transmit secondary navigation parameters in the form of messages. The master frame structure is shown in figure \ref{fig:master_frame}. 
+
+\begin{figure}[ht]
+\centering
+\includegraphics[width=0.8\columnwidth]{figs/master_frame.png}
+\centering
+\captionsetup{justification=centering}
+\caption{Master Frame Structure}
+\label{fig:master_frame}
+\end{figure}
+
+\noindent Each subframe is $292$ bits long without FEC encoding and sync word. It starts with TLM word of 8 bits and ends with $24$ bit Cyclic Redundancy Check(CRC) followed by $6$ tail bits. In subframes $1$ and $2$ navigation data is alloted with $232$ bits, starting from bit $31$. In subframe $3$ and $4$, $220$ bits are alloted starting from bit $37$. The typical structure of the subframes are shown in figure \ref{fig:frame_1_2} and figure \ref{fig:frame_3_4} respectively.
+
+\begin{figure}[ht]
+\centering
+\includegraphics[width=0.8\columnwidth]{figs/1_2.png}
+\centering
+\captionsetup{justification=centering}
+\caption{Structure of subframe 1 and 2}
+\label{fig:frame_1_2}
+\end{figure}
+
+\begin{figure}[ht]
+\centering
+\includegraphics[width=0.8\columnwidth]{figs/3_4.png}
+\centering
+\captionsetup{justification=centering}
+\caption{Structure of subframe 3 and 4}
+\label{fig:frame_3_4}
+\end{figure}
+
+\section{Moduation and Encoding}
+\subsection{PRN codes for SPS}
+Direct Sequence Spread Spectrum (DSSS), an extension of BPSK modulation, is utilized in NavIC signal modulation. We multiply the signal with a Pseudo Random waveform, thereby increasing the bandwidth occupied. PRN Codes selected for Standard Positioning System are similar to GPS C/A Gold codes. The length of each code is $1023$ chips. The code is chipped at $1.023$ Mcps.
+
+\noindent For SPS code generation, the two polynomials G1 and G2 are as defined below:
+\begin{align}
+G1 &: X^{10}+X^{3} + 1\\
+G2 &: X^{10}+X^9+X^8+X^6+X^3+X^2+1
+\end{align}
+Polynomial G1 and G2 are similar to the ones used by GPS C/A signal. The G1 and G2 generators are realized by using $10$ bits Maximum Length Feedback Shift Registers(MLFSR). The initial state of G2 provides the chip delay. The G1 register is initialized with all bits as $1$. G1 and G2 are XOR'ed for the generation of the final $1023$ chip long PRN sequence. The SPS PRN code generator is shown in figure \ref{figure:codeGen}.
+
+\begin{figure}[!ht]
+	\centering
+	\input{figs/spsCode_genBlock.tikz}
+	\caption{SPS PRN Code Generator}
+	\label{figure:codeGen}
+\end{figure}
+
+\noindent The satellites that are used in the current simulation are with PRN ids - $1,3,5$ and $7$. The initial condition of G2 register in L5 and S bands for the given PRN ids is given in table \ref{table:sps_codes}.
+
+\begin{table}[h]
+%\centering
+\input{tables/sps_codes.tex}
+\vspace{3mm}
+\caption{Code phase assignment for SPS signals}
+\label{table:sps_codes}
+\end{table}
+
+\newpage
+\subsection{FEC Encoding}
+The Navigation data subframe of $292$ bits is convolution encoded with a rate of 1/2 and clocked at $50$ symbols per second. The coding scheme is given in figure \ref{fig:FEC}. Each subframe of $292$ bits, after encoding, results in $584$ symbols. Various FEC encoding parameters used in NavIC are tabulated in table \ref{table:fec_enc}.
+\begin{figure}[ht]
+\centering
+\includegraphics[width=\columnwidth]{figs/FEC.png}
+\centering
+\captionsetup{justification=centering}
+\caption{FEC Encoding}
+\label{fig:FEC}
+\end{figure}
+\newpage
+\begin{table}[h]
+%\centering
+\input{tables/enc_param.tex}
+\vspace{3mm}
+\caption{FEC encoding parameters}
+\label{table:fec_enc}
+\end{table}
+\subsection{Interleaving}
+Interleaving is a technique used in digital communication systems to improve the resilience of transmitted data against burst errors, which are clusters of errors occurring close together in time. This technique involves rearranging the order of transmitted data, spreading errors over time, and enabling more effective error correction by error detection and correction codes. Interleaving is commonly used in various communication systems, including satellite communication, wireless communication, and storage systems.
+\subsubsection{Burst Errors:}
+\begin{enumerate}
+    \item Burst errors are consecutive errors that occur within a short time frame. 
+    \item These errors can result from various factors such as atmospheric conditions, interference, or other channel impairments.
+\end{enumerate}
+\subsubsection{Motivation for Interleaving:}
+\begin{enumerate}
+    \item Interleaving is motivated by the need to mitigate the impact of burst errors.
+    \item By rearranging the order of transmitted data, interleaving helps disperse errors, preventing them from affecting consecutive bits or symbols.
+\end{enumerate}
+\subsubsection{Interleaving Process:}
+\begin{enumerate}
+    \item Interleaving is typically performed in blocks or frames of data.
+    \item The data within each block is rearranged systematically, changing the order of symbols or bits.
+\end{enumerate}
+\subsubsection{Benefits of Interleaving:}
+\begin{enumerate}
+    \item Improved Error Correction: Interleaving allows error correction codes to more effectively correct errors because they are spread out over time.
+    \item Increased Robustness: Interleaving enhances the system's ability to recover from burst errors, providing a more reliable communication link.
+\end{enumerate}
+The $584$ symbols of FEC encoded navigation data  is interleaved using a block interleaver with n columns and k rows. Data is written in columns and then, read in rows.
+\\
+Any burst errors during the data transmission can be corrected by interleaving. In matrix interleaving, input symbols are filled into a matrix column wise and read at the output row wise. This will spread the burst error, if any, during the transmission. For SPS, data is filled into matrix of size $73$ by $8$($73$ columns, $8$ rows).
+\subsection{Sync word and Tail bits}
+Each subframe has a $16$ bit word synchronization pattern which is not encoded. Sync pattern is $EB90$ Hex. Tail bits consist of $6$ zero value bits added to the subframe and tail bits are part of FEC encoding. 
+
+Any burst errors during the data transmission can be corrected by interleaving. In matrix interleaving, input symbols are filled into a matrix column wise and read at the output row wise. This will spread the burst error, if any, during the transmission. For SPS, data is filled into matrix of size $73$ by $8$($73$ columns, $8$ rows).
+\subsection{Sync word and Tail bits}
+Each subframe has a $16$ bit word synchronization pattern which is not encoded. Sync pattern is $EB90$ Hex. Tail bits consist of $6$ zero value bits added to the subframe and tail bits are part of FEC encoding. 
+
+\subsection{Cyclic Redundancy Check(CRC)}
+The parity coding of data signal follows $24$Q polynomial for each subframe. $24$ bits of CRC parity will provide protection against burst as well as random errors with undetected error probability of $2^{-24}$ for all channel bit error probabilities $0.5$.
+
+\begin{equation}
+    g(X) = \sum_{i = 0}^{24}g_{i}X^i\;\; 
+\end{equation}
+
+    $g_{i}=1$; for $i = 0,1,3,4,5,6,7,10,11,14,17,18,23,24$ \\
+          = 0 otherwise
+\\
+\textbf{Transmitter End}:
+\\ 1. Add k-1 zeroes at the end of the data, k being the lenght of crc polynomial.
+\\2. Using modulo-2 binary division, divide data with polynomial, store remainder.
+\\3. Append remainder at the end of the data, forming encoded data.
+\\\textbf{Receiver End}:
+\\1. Perform modulo-2 division on received data and polynomial. If the remainder is 0, no error has occured.Else, atleast one error has occured.
+\section{Modulation}
+
+\subsection{Standard Positioning Service}
+The SPS signal is BPSK(1) modulated on L5 and S bands. The navigation data at data rate of $50$ sps (1/2 rate FEC encoded) is modulo $2$ added to PRN code chipped at $1.023$ Mcps. The CDMA modulated code is upconverted by the L5 and S carriers at $1176.45$ MHz and $2492.028$ MHz respectively. However, this simulation does not carry out this upconversion.
+
+\subsection{Baseband Modulation}
+The carrier signal is modulated by BPSK(1), Data channel BOC(5,2), and Pilot Channel BOC(5,2). To have a constant envelop when passed through power amplifier, we add additional signal called interplex signal.
+The basic concept of BPSK(n) (Binary Phase Shift Keying)implemented in very basic by multiplying the local oscillator by 1 or -1 for a 1 or 0 chip respectively. here,the "(n)" notation means that the signal has a chip rate of n*$f_0$ ,where $f_0$ is 1.023 Mcps(Mega chips per second).
+
+Binary offset carrier (BOC) modulation allows interoperability of satellite navigation systems. It is currently used in the US GPS system, Indian IRNSS system and in Galileo and is a square sub-carrier modulation, where a signal is multiplied by a rectangular sub-carrier of frequency $f_{sc}$ equal to or greater than the chip rate. Following this sub-carrier multiplication, the spectrum of the signal is divided into two parts, therefore BOC modulation is also known as a split-spectrum modulation. \\
+
+The main idea behind BOC modulation is to reduce the interference with BPSK-modulated signal, which has a sinc function shaped spectrum. Therefore, BPSK-modulated signals have most of their spectral energy concentrated around the carrier frequency, while BOC-modulated signals have low energy around the carrier frequency and two main spectral lobes further away from the carrier (thus, the name of split-spectrum). 
+A BOC waveform is typically denoted via BOC(m, n) or BOC ($f_{sc}$ , $f_c$), where $f_{ sc}$ is the sub-carrier frequency,$f_c$ is the chip frequency, m = $f_{sc}$ / $f_{ref}$ , n = $f_c$ / $f_{ref}$, and $f_{ref}$ = 1.023Mcps is the reference chip frequency of NavIC signal.
+
+\subsubsection{Mathematical Equations}
+The following equations describe baseband signals for L5 and S band navigation data.
+\\
+\textbf{SPS Data Signal:}
+\begin{equation}
+	s_{sps}(t) = \sum_{i=-\infty}^{\infty} c_{sps}(\abs{i}_{L\_sps}) . d_{sps}(\sbrak{i}_{CD\_sps}) . \rect_{T_{c,sps}}(t-iT_{c,sps})
+\end{equation}
+\textbf{RS BOC Pilot Signal:}
+\begin{equation}
+	s_{rs\_p}(t) = \sum_{i=-\infty}^{\infty} c_{rs\_p}(\abs{i}_{L\_rs\_p}) . \rect_{Tc,rs\_p}(t-iT_{c,rs\_p}). sc_{rs\_p}(t,0)
+\end{equation}
+\textbf{RS BOC Signal:}
+%\begin{equation}
+\begin{multline}
+	s_{rs\_d}(t) = \sum_{i=-\infty}^{\infty} c_{rs\_d}(\abs{i}_{L\_rs\_d}) . d_{rs\_d}(\sbrak{i}_{CD\_rs\_d}).  \\ 
+	                       \rect_{T_{c,rs\_d}}(t-iT_{c,rs\_d}). sc_{rs_d}(t,0)
+\end{multline}
+%\end{equation}
+The sub-carrier is defined as:
+\begin{equation}
+	sc_x(t,\phi) = \sgn\sbrak{sin(2 \pi f_{sc,x}t + \phi)}
+\end{equation}
+
+\noindent The IRNSS RS data and pilot BOC signals are sinBOC. Hence the subcarrier phase $\phi=0$.
+The complex envelope of composite signal with Interplex signal (I(t)) is:
+\begin{equation}
+s(t) = \dfrac{1}{3} \sbrak{\sqrt{2} (s_{sps}(t) + s_{rs\_p}(t)) + j(2. s_{rs\_d}(t) - I(t))} 
+\end{equation}
+
+\noindent The Interplex signal $I(t)$ is generated to realize the constant envelope composite signal. The operation $\abs{i}_X$ gives the code chip index for any signal. Similarly $[i]_X$ gives data bit index for any signal.
+Symbol definitions are given in below table \ref{table:symbdesc}.
+
+\begin{table}[h]
+%\centering
+\input{tables/table1.tex}
+\vspace{3mm}
+\caption{Symbol Description}
+\label{table:symbdesc}
+\end{table}
+
+The functions for data generation, SPS-PRN sequence generation and baseband modulation are present in the below code.
+\begin{lstlisting}
+    codes/transmitter/transmitter.py
+\end{lstlisting}
+\let\cleardoublepage\clearpage

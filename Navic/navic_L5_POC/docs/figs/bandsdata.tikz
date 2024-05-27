@@ -1,0 +1,107 @@
+\tikzset{every picture/.style={line width=0.75pt}} %set default line width to 0.75pt        
+\begin{tikzpicture}[x=0.75pt,y=0.75pt,yscale=-1,xscale=1]
+%uncomment if require: \path (0,471); %set diagram left start at 0, and has height of 471
+
+%Shape: Rectangle [id:dp9517205987034671] 
+\draw  [fill={rgb, 255:red, 192; green, 211; blue, 233 }  ,fill opacity=1 ] (92.53,176.6) -- (208.12,176.6) -- (208.12,227.79) -- (92.53,227.79) -- cycle ;
+%Shape: Rectangle [id:dp3424557357689655] 
+\draw  [fill={rgb, 255:red, 184; green, 205; blue, 230 }  ,fill opacity=1 ] (254.8,175.52) -- (351.33,175.52) -- (351.33,227.79) -- (254.8,227.79) -- cycle ;
+%Shape: Rectangle [id:dp8560354037740456] 
+\draw  [fill={rgb, 255:red, 137; green, 183; blue, 239 }  ,fill opacity=1 ] (389.7,207.67) -- (438,207.67) -- (438,227.79) -- (389.7,227.79) -- cycle ;
+%Straight Lines [id:da4982550625943454] 
+\draw    (78.33,227.67) -- (148.8,227.79) ;
+%Straight Lines [id:da09038165069225701] 
+\draw    (148.8,227.79) -- (222.43,228.52) ;
+%Straight Lines [id:da6963693922945375] 
+\draw    (230.82,228.52) -- (290.62,227.79) ;
+%Straight Lines [id:da5101605840021868] 
+\draw    (290.62,227.79) -- (362.75,228.52) ;
+%Straight Lines [id:da4455724073590175] 
+\draw    (218.13,233.34) -- (222.43,228.52) -- (228.04,222.24) ;
+%Straight Lines [id:da44617587453109] 
+\draw    (370.38,228.52) -- (461.33,227.79) ;
+%Shape: Rectangle [id:dp9436860161134495] 
+\draw  [fill={rgb, 255:red, 142; green, 184; blue, 233 }  ,fill opacity=1 ] (99.9,202.67) -- (156.33,202.67) -- (156.33,227.7) -- (99.9,227.7) -- cycle ;
+%Straight Lines [id:da1306791733179924] 
+\draw    (226.51,233.34) -- (230.82,228.52) -- (236.42,222.24) ;
+%Straight Lines [id:da9755728827987384] 
+\draw    (358.45,233.34) -- (362.75,228.52) -- (368.36,222.24) ;
+%Straight Lines [id:da6153463426480046] 
+\draw    (366.07,233.34) -- (370.38,228.52) -- (375.98,222.24) ;
+%Straight Lines [id:da524212389543216] 
+\draw    (92.53,227.79) -- (82.36,237.05) ;
+%Straight Lines [id:da6359631954084011] 
+\draw    (98.83,227.7) -- (92.93,236.8) ;
+%Straight Lines [id:da4309637537474662] 
+\draw    (122.33,227.67) -- (113.33,239.67) ;
+%Straight Lines [id:da7084848716058743] 
+\draw    (154.02,227.7) -- (145.34,239.67) ;
+%Straight Lines [id:da9025278744467291] 
+\draw    (208.45,227.79) -- (200.32,238.9) ;
+%Straight Lines [id:da4288601859090342] 
+\draw    (254.8,227.79) -- (247.94,241.67) ;
+%Straight Lines [id:da6434353112428917] 
+\draw    (270.26,228.16) -- (265,240.67) ;
+%Straight Lines [id:da6934497348254585] 
+\draw    (299.96,228.29) -- (290.19,243.19) ;
+%Straight Lines [id:da08356280974055585] 
+\draw    (326.33,228.29) -- (318.52,242.26) ;
+%Straight Lines [id:da47170852835093413] 
+\draw    (389.7,227.79) -- (385.12,239.51) ;
+%Straight Lines [id:da39211419648473833] 
+\draw    (415.47,228.16) -- (412.56,240.75) ;
+%Straight Lines [id:da6629675504582904] 
+\draw    (438.38,227.79) -- (433,240.67) ;
+%Straight Lines [id:da16092426119270775] 
+\draw    (351.33,227.79) -- (345.23,241.76) ;
+%Shape: Rectangle [id:dp5224743842810824] 
+\draw  [fill={rgb, 255:red, 142; green, 184; blue, 233 }  ,fill opacity=1 ] (270.26,203.12) -- (326.69,203.12) -- (326.69,228.16) -- (270.26,228.16) -- cycle ;
+
+% Text Node
+\draw (393.01,191.59) node [anchor=north west][inner sep=0.75pt]   [align=left] {{\footnotesize S band}};
+% Text Node
+\draw (396.7,208.67) node [anchor=north west][inner sep=0.75pt]   [align=left] {{\footnotesize NavIC}};
+% Text Node
+\draw (279.94,179.23) node [anchor=north west][inner sep=0.75pt]  [font=\footnotesize] [align=left] {L1 band};
+% Text Node
+%\draw (100.68,152.4) node [anchor=north west][inner sep=0.75pt]  [font=\scriptsize] [align=left] {ARNS / RNSS Band};
+% Text Node
+\draw (126.47,182.01) node [anchor=north west][inner sep=0.75pt]  [font=\footnotesize] [align=left] {L5 band};
+% Text Node
+\draw (109.89,206.05) node [anchor=north west][inner sep=0.75pt]   [align=left] {{\footnotesize NavIC}};
+% Text Node
+\draw (280.67,206.99) node [anchor=north west][inner sep=0.75pt]  [font=\normalsize] [align=left] {{\footnotesize NavIC}};
+% Text Node
+%\draw (252.7,152.4) node [anchor=north west][inner sep=0.75pt]  [font=\scriptsize] [align=left] {ARNS / RNSS Band};
+% Text Node
+%\draw (367.49,152.32) node [anchor=north west][inner sep=0.75pt]  [font=\scriptsize] [align=left] {RNSS/RDSS Band};
+% Text Node
+\draw (52.94,262.5) node [anchor=north west][inner sep=0.75pt]  [font=\scriptsize,rotate=-306.7] [align=left] {{\tiny 1164 MHz}};
+% Text Node
+\draw (58.07,271.48) node [anchor=north west][inner sep=0.75pt]  [font=\scriptsize,rotate=-306.7] [align=left] {{\tiny 1164.45 MHz}};
+% Text Node
+\draw (78.65,275.41) node [anchor=north west][inner sep=0.75pt]  [font=\scriptsize,rotate=-306.7] [align=left] {{\tiny *1176.45 MHz}};
+% Text Node
+\draw (111.71,275.12) node [anchor=north west][inner sep=0.75pt]  [font=\scriptsize,rotate=-306.7] [align=left] {{\tiny 1188.45 MHz}};
+% Text Node
+\draw (165.87,273.01) node [anchor=north west][inner sep=0.75pt]  [font=\scriptsize,rotate=-306.7] [align=left] {{\tiny 1215.00 MHz}};
+% Text Node
+\draw (219.28,275.78) node [anchor=north west][inner sep=0.75pt]  [font=\scriptsize,rotate=-306.7] [align=left] {{\tiny 1559.00 MHz}};
+% Text Node
+\draw (234.71,275.48) node [anchor=north west][inner sep=0.75pt]  [font=\scriptsize,rotate=-306.7] [align=left] {{\tiny 1563.42 MHz}};
+% Text Node
+\draw (255.1,281.42) node [anchor=north west][inner sep=0.75pt]  [font=\scriptsize,rotate=-306.7] [align=left] {{\tiny *1575.42 MHz}};
+% Text Node
+\draw (285.46,278.33) node [anchor=north west][inner sep=0.75pt]  [font=\scriptsize,rotate=-306.7] [align=left] {{\tiny 1587.42 MHz}};
+% Text Node
+\draw (313.45,278.62) node [anchor=north west][inner sep=0.75pt]  [font=\scriptsize,rotate=-306.7] [align=left] {{\tiny 1610.00 MHz}};
+% Text Node
+\draw (355.7,273.93) node [anchor=north west][inner sep=0.75pt]  [font=\scriptsize,rotate=-306.7] [align=left] {{\tiny 2483.50 MHz}};
+% Text Node
+\draw (379.59,282.47) node [anchor=north west][inner sep=0.75pt]  [font=\scriptsize,rotate=-306.7] [align=left] {{\tiny *2492.028 MHz}};
+% Text Node
+\draw (402.14,276.71) node [anchor=north west][inner sep=0.75pt]  [font=\scriptsize,rotate=-306.7] [align=left] {{\tiny 2500.00 MHz}};
+% Text Node
+\draw (362,295) node [anchor=north west][inner sep=0.75pt]  [font=\tiny] [align=left] {{\tiny *CentreFrequency of signals}};
+
+\end{tikzpicture}

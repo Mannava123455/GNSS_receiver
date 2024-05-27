@@ -1,0 +1,14 @@
+The baseband samples optained from the receiver frontend is given to the receiver module.
+
+\section{Receiver operation}
+
+\begin{enumerate}
+	\item The samples from the frontend contains the doppler frequency and code phase and carrier phase. 
+	\item The doppler frequency and codephase is removed by the receiver module and obtain the navigation data transmitted.
+	\item From the navigation data we find the position of satellites in the orbit.
+	\item From the position of satellites we find the position of receiver on the earth.
+	\item The detailed explanation of receiver is given in 
+	\item[] \begin{lstlisting}
+		gvv/navic_python/main.pdf
+	\end{lstlisting} 
+\end{enumerate}

@@ -1,0 +1,455 @@
+\documentclass[journal,10pt,onecolumn]{article}
+\usepackage{graphicx}
+\usepackage[margin=0.5in]{geometry}
+\usepackage{amsmath}
+\usepackage{array}
+\usepackage{booktabs}
+\usepackage{listings}
+\usepackage{titlesec}
+\usepackage[utf8]{inputenc}
+\usepackage{amsmath}
+\usepackage{amsfonts} 
+\usepackage[linesnumbered,ruled,vlined]{algorithm2e}
+\providecommand{\norm}[1]{\left\lVert#1\right\rVert}
+\providecommand{\abs}[1]{\left\vert#1\right\vert}
+\usepackage{enumerate}
+\let\vec\mathbf
+\newcommand{\myvec}[1]{\ensuremath{\begin{pmatrix}#1\end{pmatrix}}}
+\newcommand{\mydet}[1]{\ensuremath{\begin{vmatrix}#1\end{vmatrix}}}
+\providecommand{\brak}[1]{\ensuremath{\left(#1\right)}}
+\titleformat{\section}[block]{\centering\large\bfseries}{}{0pt}{}
+
+\lstset{
+frame=single,
+breaklines=true,
+columns=fullflexible
+}
+
+\begin{document}
+\section*{GPS Signal Description}
+
+\begin{enumerate}
+
+    \item The baseband signal \textbf{transmited} by the satellite is given as 
+    \begin{equation}
+        S(t) = S_{PPS}(t)+ jS_{SPS}(t)
+    \end{equation} 
+    \begin{enumerate}
+        \item[$\bullet$]  $S_{SPS}(t) = 	\sum_{i=-\infty}^{\infty}  c_{sps}(|i|_{L\_sps}) . d([i]_{CD\_sps}) . rect_{T_{c,sps}}(t-iT_{c,sps})$ --- Standard Positioning Service
+        \item[$\bullet$] $S_{PPS}(t) = 	\sum_{i=-\infty}^{\infty}  c_{pps}(|i|_{L\_pps}) . d([i]_{CD\_pps}) . rect_{T_{c,pps}}(t-iT_{c,pps}) $ ----   Precision Positioning Service
+    \end{enumerate}
+    \item Let $x_{in}[n]$ be the incoming signal at the \textbf{receiver} end and is given as
+	\begin{equation}
+        x_{in}[n] = A(t) s_T(t-\tau (t))e^{j(2\pi f_D (t)t+\phi (t))}|_{t=nT_s}  + n(t)\vert _{t=nT_s}
+    \end{equation}
+    where \\
+    \begin{enumerate}
+        \item[$\bullet$] $A(t)$ is Amplitude
+        \item[$\bullet$] $s_T(t)$ is Complex baseband signal
+        \item[$\bullet$] $\tau(t)$ is code delay(time varying)
+        \item[$\bullet$] $f_D(t)$ is Doppler shift(time varying)
+        \item[$\bullet$] $\phi(t)$ is carrier phase shift(time varying)
+        \item[$\bullet$]  $n(t)$ is Random noise with zero mean
+        \item[$\bullet$] $T_s$ is Sampling period
+        \item[$\bullet$] $f_s$ is Sampling frequency
+    \end{enumerate}
+\end{enumerate}
+
+
+\section{Pseudo code for GPS Signal Acquisition}
+
+
+\subsection{Functions for computing the PRN codes of GPS satellite}
+\begin{enumerate}
+    \item 
+    \begin{enumerate}
+    \item g1$\_$lfsr()
+    \begin{enumerate}
+    \item[] \textbf{uint16} state = 0x3FF
+    \item[] \textbf{uint8} out[128]
+    \item[] \textbf{uint8} new$\_$bit
+    \item[] \textbf{for} \textbf{i}=0 to \textbf{i}=1022
+        \begin{enumerate}
+            \item[] \textbf{if} \textbf{i} $\%$ 8 == 0
+            \begin{itemize}
+                \item[] out[\textbf{i}/8] = 0x00; 
+            \end{itemize}
+            \item[] out[\textbf{i/8}] $|$= ((state $\gg$ 9) \& 0x1) $<<$ (7 - i$\%$8) 
+            \item[] new$\_$bit = ((state $\gg$ 9) $\oplus$ (state $\gg$ 2)) $\&$ 0x1
+            \item[] state = ((state $\ll$ 1) $\vert$  new$\_$bit) $\&$ 0x3FF
+        \end{enumerate}
+    \item[] \textbf{end for}
+    \item[] return out
+    \end{enumerate}
+    
+    
+
+    \item g2$\_$lfsr(\textbf{uint8} tap0,\textbf{uint8} tap1)
+    \begin{enumerate}
+        \item[] \textbf{uint16} state = 0x3FF
+        \item[] \textbf{uint8}  out[128]
+        \item[] tap0 = tap0-1
+        \item[] tap1 = tap1-1 
+        \item[] \textbf{for} \textbf{i}=0 to \textbf{i}=1022
+        \begin{enumerate}
+            \item[] \textbf{if} \textbf{i} $\%$ 8 == 0
+            \begin{itemize}
+                \item[] out[\textbf{i}/8] = 0x00; 
+            \end{itemize}
+            \item[] out[\textbf{i}/8] $|$= (((state $\gg$ tap0) $\oplus$ (state $\gg$ tap1)) $\&$ 0x1) $<<$ (7 - i$\%$8)
+            \item[] new$\_$bit =  ((state $\gg$ 9) $\oplus$ (state $\gg$ 8) $\oplus$
+            (state $\gg$ 7) $\oplus$ (state $\gg$ 5) $\oplus$
+            (state $\gg$ 2) $\oplus$ (state $\gg$ 1)) $\&$ 0x1
+            \item[] state = ((state $\ll$ 1) $\vert$ new$\_$bit) $\&$ 0x3FF
+        \end{enumerate}
+        \item[] \textbf{end for}
+        \item[] return out
+    \end{enumerate}
+    
+
+    \item[]
+    \item combine$\_$g1$\_$g2(\textbf{uint8} *g1,\textbf{uint8} *g2)
+    \begin{enumerate}
+        \item[] \textbf{uint8} out[128]
+        \item[] \textbf{for} \textbf{i}=0 to \textbf{i}=1022
+        \begin{enumerate}
+            \item[] out[\textbf{i}] = g1[\textbf{i}] $\oplus$ g2[\textbf{i}]
+        \end{enumerate}
+        \item[]  \textbf{end for}
+        \item[]  return out
+    \end{enumerate}
+    
+
+
+\end{enumerate}
+\end{enumerate}
+
+\subsection{Main Algorithm For GPS acquisition}
+
+\begin{enumerate}
+    \item[]
+    \item \textbf{int8} incoming$\_$samples[4096]  /** Receive the 2 msec of GPS L1 samples from DFE. **/
+    \item[]
+    \item[] /** Compute power of incoming signal **/
+    \item \textbf{uint8} *incoming$\_$signal$\_$power
+    \item[]
+    \item[] /** The below function was later implemented to take 1 byte and seperate I and Q and compute power and give output in 4 bits. **/
+    \item \textbf{CEVA$\_$DSP$\_$LIB$\_$MAT$\_$CX$\_$MUL$\_$TRANS$\textunderscore$Q15}(\textbf{incoming$\_$samples},\textbf{1,2048,incoming$\_$signal$\_$power}) 
+    \item  The power of incoming signal should be \textbf{ incoming$\_$signal$\_$power $>$ threshold} . If true, \textbf{proceed to} below steps else, \textbf{stop} the process.
+    \item[]
+    \item \textbf{uint8} SVs[32][2] = \{
+        \{2, 6\},
+        \{3, 7\},
+        \{4, 8\},
+        \{5, 9\},
+        \{1, 9\},
+        \{2, 10\},
+        \{1, 8\},
+        \{2, 9\},
+        \{3, 10\},
+        \{2, 3\},
+        \{3, 4\},
+        \{5, 6\},
+        \{6, 7\},
+        \{7, 8\},
+        \{8, 9\},
+        \{9, 10\},
+        \{1, 4\},
+        \{2, 5\},
+        \{3, 6\},
+        \{4, 7\},
+        \{5, 8\}, 
+        \{6, 9\},
+        \{1, 3\},
+        \{4, 6\},
+        \{5, 7\}, 
+        \{6, 8\},
+        \{7, 9\},
+        \{8, 10\},
+        \{1, 6\},
+        \{2, 7\},
+        \{3, 8\},
+        \{4, 9\}
+    \};
+     
+    \item \textbf{uint8} g1[128]   \hspace{5mm} /*  Array for g1 LFSR */
+    \item \textbf{uint8} g2[128]   \hspace{5mm} /* Array for g2 LFSR */
+    \item g1 =  g1$\_$lfsr()       \hspace{5mm} /* Fucntion call */
+    \item \textbf{uint8} tap0,tap1
+    \item \textbf{uint8} gold$\_$code[128] 
+    \item \textbf{int8} bpsk$\_$code[1023]
+    \item \textbf{int8} upsampled$\_$code[2048]
+    \item \textbf{int8} code$\_$fft[2048]
+    \item \textbf{uint8} coherent = 2
+    \item \textbf{uint8} non$\_$coherent = 1
+    \item \textbf{int16} angles[4096]
+    \item  \textbf{int8} cos$\_$sin$\_$out[4096]
+    \item  \textbf{int8} shifted$\_$signal[4096]
+    \item \textbf{int8}  coherent$\_$product[2048]
+    \item  \textbf{int8} non$\_$coherent$\_$product[2048]
+    \item  \textbf{int8} signal$\_$one[2048]
+    \item   \textbf{int8} signal$\_$one$\_$fft[2048]
+    \item  \textbf{int8} Mul$\_$signal[2048]
+    \item  \textbf{int8} IFFT$\_$signal[2048]
+    \item  \textbf{int8} power[2048]
+    \item \textbf{int16} max$\_$power[5] = $\{0\}$ 
+    \item \textbf{int8} visible$\_$satellites$\_$withMaxPower[5] = $\{0\}$
+    \item \textbf{int16} codePhase[5] = $\{0\}$
+    \item  \textbf{int16} frequency$\_$offset[5] = $\{0\}$
+    \item  \textbf{uint8} visible$\_$PRN$\_$codes[5][128] = $\{\{0\}\}$  \hspace{5mm} /* Matrix to store the PRN codes of visible satellites */ 
+
+
+    \item \textbf{for} \textbf{sv}=0 to \textbf{sv}=31
+	\begin{enumerate}
+        \item[] /******** PRN code generation ********/
+        \item[] \textbf{uint8} index=0    \hspace{5mm} /* index for iterating the SVs arraay */ 
+        \item[] tap0 = SVs[\textbf{sv}][index]
+        \item[] tap1 = SVs[\textbf{sv}][index++]
+        \item[] g2 = g2$\_$lfsr(tap0,tap1)   /* Fucntion call */
+        \item[] gold$\_$code = combine$\_$g1$\_$g2(g1,g2)  /* Fucntion call */
+        \item[]
+        \item[]  /** Apply BPSK modulation to the gold code. In bpsk modulation 0 is mapped to 1 and 1 is mapped to -1. In order to compute fft in 4 bits for each byte the first 4 bits is real and second 4 bits is imaginary. **/
+        
+
+        \item[] \textbf{uint8} \textbf{p} = 0
+        \item[] \textbf{for} \textbf{i}=0 to \textbf{i}=127
+        \begin{enumerate}
+            \item[] \textbf{for} \textbf{j}=7 to \textbf{j} $>=$ 0
+            \begin{enumerate}
+                \item[] \textbf{if} (gold$\_$code[\textbf{i}] $>>$ j) \& 1
+                \begin{itemize}
+                    \item[] bpsk$\_$code[\textbf{p}] = 0XF0
+                \end{itemize}
+                \item[] \textbf{else}
+                \begin{itemize}
+                    \item[] bpsk$\_$code[\textbf{p}] = 0x10
+                \end{itemize}
+                \item[] \textbf{if} \textbf{p} == 1022
+                \begin{itemize}
+                    \item[] break
+                \end{itemize}
+                \item[] \textbf{p} = \textbf{p} + 1
+                \item[] \textbf{j} = \textbf{j} - 1
+            \end{enumerate}
+            \item[] \textbf{end for}
+
+        \end{enumerate}
+
+        \item[] \textbf{end for}
+    \end{enumerate}
+    \item[]
+    \item[] /* Upsampling the PRN code */
+    \item[] \textbf{for} \textbf{i} = 0 to \textbf{i} = 1022
+    \begin{enumerate}
+        \item[] upsampled$\_$code[\textbf{2i}] =  bpsk$\_$code[\textbf{i}]
+        \item[] upsampled$\_$code[\textbf{2i + 1}] =  bpsk$\_$code[\textbf{i}]
+    \end{enumerate}
+    \item[] \textbf{end for}
+    \item[] upsampled$\_$code[2046] = 0
+    \item[] upsampled$\_$code[2047] = 0
+    \item[] max$\_$of$\_$max = 0
+    \item[] \textbf{for} \textbf{doppler} = -25000 to \textbf{doppler} = 25000
+    \begin{enumerate}
+        \item[] /**** The FFT function computes the fft of upsampled$\_$code of size 2048 and stores the output in code$\_$fft of size 2048 such that first nibble is real number and second number is imaginary number ****/
+        \item[] 
+        \item[] \textbf{fft(code$\_$fft,upsampled$\_$code,2048)}
+        \item[] 
+        \item[] \textbf{conjugate(code$\_$fft,2048)}
+        \item[] 
+        \item[]  /********* Computing the x[n]$e^{-j2 \pi F_Dt}$, for n = 0 to 2047 *********/
+        \item[] \textbf{for} \textbf{i} = 0 to \textbf{i} = 4095
+        \begin{itemize}
+            \item[] angles[\textbf{i}] = (2 * pi * doppler * \textbf{i} * 10430)/2048000
+        \end{itemize}
+        \item[] \textbf{end for}
+        \item[] 
+        \item[] /** The output of the cossin function should be the array of size 4096 and in each byte 1st 4 bits is cos values and 2nd 4 bits is sin values **/
+        \item[] \textbf{CEVA$\_$DSP$\_$LIB$\_$COSSIN$\_$Q15(angles,cos$\_$sin$\_$out,4096)}
+        \item[]
+        \item[] /**Multiply the incoming signal with cos$\_$sin$\_$out such that the resultant signal should have the size of 4096 with each element of size 1 byte such that in each byte first nibble is real number and second nibble is imaginary ***/
+        \item[] \textbf{Complex$\_$mul(shifted$\_$signal,cos$\_$sin$\_$out,incoming$\_$samples,4096)}
+        \item[] 
+        \item[] \textbf{for}  \textbf{i} = 0 to \textbf{i} = 2047
+        \begin{itemize}
+            \item[] non$\_$coherent$\_$product[\textbf{i}] = 0
+        \end{itemize}
+        \item[] \textbf{end for}
+        \item[] start$\_$index = 0
+        \item[] end$\_$index = start$\_$index +2047
+        \item[] \textbf{for}  \textbf{non$\_$coh} = 0 to  \textbf{non$\_$coh} =  non$\_$coherent
+        \begin{itemize}
+            \item[] \textbf{for}  \textbf{i} = 0 to \textbf{i} = 2047
+            \begin{itemize}
+                \item[] coherent$\_$product[\textbf{i}] = 0
+            \end{itemize}
+            \item[] \textbf{end for}
+            \item[] \textbf{for} \textbf{coh} = 0 to  \textbf{coh} = coherent
+            \begin{itemize}
+                \item[] \textbf{z} = 0
+                \item[] \textbf{for} \textbf{i} =  start$\_$index to  \textbf{i} = end$\_$index 
+                \begin{itemize}
+                    \item[] signal$\_$one[\textbf{z}] = shifted$\_$signal[\textbf{i}]
+                    \item[] \textbf{z} = \textbf{z} + 1
+                \end{itemize}
+                \item[] \textbf{end for}
+                \item[] \textbf{fft(signal$\_$one$\_$fft,signal$\_$one,2048)}
+                \item[] \textbf{Complex$\_$mul(Mul$\_$signal, signal$\_$one$\_$fft , code$\_$fft,2048)}
+                \item[] \textbf{for} \textbf{i} =  0 to  \textbf{i} = 2047
+                \begin{itemize}
+                    \item[] coherent$\_$product[\textbf{i}] = coherent$\_$product[\textbf{i}] +  Mul$\_$signal[\textbf{i}]
+                \end{itemize}
+                \item[] \textbf{end for}
+                \item[]   start$\_$index =  start$\_$index + 2048
+                \item[]   end$\_$index= end$\_$index + 2048
+            \end{itemize}
+            \item[] \textbf{end for}
+            \item[] 
+            \item[] \textbf{ifft(IFFT$\_$signal,coherent$\_$product,2048)}
+            \item[] 
+            \item[] \textbf{absolute(power , IFFT$\_$signal , 2048)}
+            \item[] 
+            \item[] \textbf{for} \textbf{i} =  0 to  \textbf{i} = 2047
+                \begin{itemize}
+                    \item[] non$\_$coherent$\_$product[\textbf{i}] = non$\_$coherent$\_$product[\textbf{i}] +  power[\textbf{i}]
+                \end{itemize}
+            \item[] \textbf{end for}
+            \item[] \textbf{int8} max = 0
+            \item[] \textbf{for} \textbf{n}=0 to \textbf{n} = 2047
+            \begin{enumerate}
+                \item[] \textbf{if} non$\_$coherent$\_$product[\textbf{n}] $>$ max:
+                \begin{enumerate}
+                    \item[] max = non$\_$coherent$\_$product[\textbf{n}]
+                    \item[] max$\_$index = \textbf{n}
+                \end{enumerate}
+               \item[] \textbf{end if}
+            \end{enumerate}
+            \item[] \textbf{end for} 
+            \item[] \textbf{if} (max$\_$index - 5) $>=$ 0
+            \begin{itemize}
+                \item[] start = max$\_$index - 5
+            \end{itemize}
+            \textbf{else}
+            \begin{itemize}
+                \item[] start = 0
+            \end{itemize}
+            \item[] \textbf{if} (max$\_$index + 5) $<$ 2048
+            \begin{itemize}
+                \item[] end = max$\_$index + 5
+            \end{itemize}
+            \textbf{else}
+            \begin{itemize}
+                \item[] end = 2047
+            \end{itemize}
+            \item[] elements$\_$to$\_$delete = end + start + 1
+            \item[] \textbf{for} \textbf{i} = end + 1 to \textbf{i} = 2047
+            \begin{itemize}
+                \item[] non$\_$coherent$\_$product[\textbf{i} - elements$\_$to$\_$delete] = non$\_$coherent$\_$product[\textbf{i}]
+            \end{itemize}  
+            \textbf{end for}
+            \item[] noise = 0
+            \item[] \textbf{for} \textbf{i} = 0 to \textbf{i} = 2042
+            \begin{itemize}
+                \item[] noise = noise + non$\_$coherent$\_$product[\textbf{i}]
+            \end{itemize} 
+            \textbf{end for}
+            \item[] max$\_$value = max / noise 
+
+
+
+
+
+
+
+        \end{itemize}
+        \item[] \textbf{end for}
+      
+    \item[] \textbf{if}  max$\_$value $>$ max$\_$of$\_$max
+    \begin{itemize}
+        \item[] max$\_$of$\_$max = max$\_$value
+        \item[] max$\_$of$\_$max$\_$index = max$\_$index
+        \item[] doppler$\_$frequency = \textbf{doppler}
+    \end{itemize}
+    \item[] \textbf{end if}
+    \item[] \textbf{doppler} = \textbf{doppler} + 500
+
+    \end{enumerate}
+    \item[] \textbf{end for}
+    \item[] /*********Find top 5 power,codephase,sat id and doppler frequency *************/
+    \item[] \textbf{for} \textbf{i} = 0 to \textbf{i} = 4
+    \begin{enumerate}
+        \item[] \textbf{if} max$\_$of$\_$max  $>$ max$\_$power[\textbf{i}]
+        \begin{enumerate}
+            \item[] \textbf{for} \textbf{j} = 4 to \textbf{j} = \textbf{i}-1
+            \begin{itemize}
+                \item[] max$\_$power[\textbf{j}] = max$\_$power[\textbf{j}-1]
+                \item[] visible$\_$satellites$\_$withMaxPower[\textbf{j}] = visible$\_$satellites$\_$withMaxPower[\textbf{j}-1]
+                \item[] codePhase[\textbf{j}] = codePhase[\textbf{j}-1]
+                \item[]  frequency$\_$offset[\textbf{j}] = frequency$\_$offset[\textbf{j}-1]
+                \item[] \textbf{j} = \textbf{j}-1
+            \end{itemize} 
+            \item[] \textbf{end for}
+            \item[] max$\_$power[\textbf{i}] =  max$\_$of$\_$max 
+            \item[] visible$\_$satellites$\_$withMaxPower[\textbf{i}] = \textbf{sv}
+            \item[]  codePhase[\textbf{i}] = max$\_$of$\_$max$\_$index
+            \item[]   frequency$\_$offset[\textbf{i}] = doppler$\_$frequency
+            \item[] \textbf{for} \textbf{b} = 0 to \textbf{b} = 128
+            \begin{itemize}
+                \item[] visible$\_$PRN$\_$codes[\textbf{i}][\textbf{b}] = gold$\_$code[\textbf{b}]
+            \end{itemize}
+            \item[] \textbf{end for}
+            \item[] break the loop
+        \end{enumerate}
+        \item[] \textbf{end if}
+    \end{enumerate}
+    \item[] \textbf{end for}
+
+
+    
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+\end{enumerate}
+\textbf{end for}  
+\end{document}
