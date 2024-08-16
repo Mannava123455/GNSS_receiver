@@ -32,7 +32,7 @@ Install the configurations for bladerf and usrp from the https://github.com/Mann
 For generating the samples get the below folder
 
 ```
- svn co https://github.com/Mannava123455/module_3/trunk/Navic/navic_transmiter
+ svn co https://github.com/Mannava123455/GNSS_receiver/trunk/Navic/navic_transmiter
 ```
 
 ```
@@ -55,7 +55,7 @@ For file input we have to use 8 bit duration i.e in bin file 1st 8 bits is I and
 In order to run the navic reciver get the folder below
 
 ```
- svn co https://github.com/Mannava123455/module_3/trunk/Navic/navic_receiver
+ svn co https://github.com/Mannava123455/GNSS_receiver/trunk/Navic/navic_receiver
 ```
 ```
  cd navic_receiver/cli/linux
