@@ -835,13 +835,14 @@ static void attempt_solution(struct Snapshot *s)
         }
 
         phase_in_gold_code = (s->entries[e].lock_code_nco >> 1) & 0x7FFFFFFF;
-
+        printf("************************nco value is :%lf\n",(((double)phase_in_gold_code) / (1023 * (1 << 21))));//  - space_vehicles[sv].acquire.max_offset/2048) * 1023);
         /* calc transmit time milliseconds  */
         space_vehicles[sv].time_raw = s->entries[e].nav_subframe_of_week * 6000 + s->entries[e].lock_ms_of_frame + ((double)phase_in_gold_code) / (1023 * (1 << 21));
         /* Convert from milliseconds to seconds */
         space_vehicles[sv].time_raw /= 1000.0;
 
         printf("************************time raw value is :%f\n", space_vehicles[sv].time_raw);
+        
 
         /* Correct the time using calibration factors */
         space_vehicles[sv].pos_t_valid = 0;
@@ -2220,34 +2221,34 @@ static void snapshot_timing(struct Snapshot *s)
 
         sv = space_vehicles + i;
         id = sv->id;
-        // printf("%02i,",id);
+        printf("%02i,",id);
         switch (sv->state)
         {
         case state_acquiring:
-            // printf("ACQUIRE, ");
+            printf("ACQUIRE, ");
             break;
         case state_tracking:
-            // printf("  TRACK, ");
+            printf("  TRACK, ");
             break;
         case state_locked:
-            // printf(" LOCKED, ");
+            printf(" LOCKED, ");
             break;
         default:
-            //  printf(" ??????, ");
+            printf(" ??????, ");
             break;
         }
-        /*if(sv->nav_orbit.orbit_valid)
+        if(sv->nav_orbit.orbit_valid)
 
-            //printf("YES,");
+            printf("YES,");
         else
-            //printf(" NO,");
+            printf(" NO,");
 
         if(sv->nav_time.time_good)
-           // printf("YES,");
+           printf("YES,");
         else
-           // printf(" NO,");
+           printf(" NO,");
 
-        printf(" %6i,      %6i,      %4i,       %4i,         %2i %1i  %2i %2i %c%c%c%c%c\n",
+        printf(" %6i,      %6i,      %4i,       %4i,         %2i  %1i  %2i %2i %c%c%c%c%c\n",
             sv->nav_time.week_no,
             sv->navdata.subframe_of_week,
             sv->lock.ms_of_frame,
@@ -2261,10 +2262,10 @@ static void snapshot_timing(struct Snapshot *s)
             (sv->navdata.valid_subframe[3] ? '3' : '.'),
             (sv->navdata.valid_subframe[4] ? '4' : '.'),
             (sv->navdata.valid_subframe[5] ? '5' : '.')
-            );*/
+            );
     }
 
-    // printf("\n");
+     printf("\n");
 #endif
 }
 
