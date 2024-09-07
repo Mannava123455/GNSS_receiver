@@ -15,7 +15,7 @@ extern uint64_t sdraccuisition(sdrch_t *sdr, double *power)
 {
     int i;
     char *data;
-    uint64_t buffloc;
+    uint64_t buffloc = 0;
 
     /* memory allocation */
     data=(char*)sdrmalloc(sizeof(char)*2*sdr->nsamp*sdr->dtype);
@@ -86,6 +86,7 @@ extern int checkacquisition(double *P, sdrch_t *sdr)
 
     /* peak ratio */
     maxP2=maxvd(&P[freqi*sdr->nsamp],sdr->nsamp,exinds,exinde,&maxi);
+    
 
     sdr->acq.peakr=maxP/maxP2;
     sdr->acq.acqcodei=codei;

@@ -12,39 +12,8 @@
 *          uint64_t cnt      I   counter of sdr channel thread
 * return : uint64_t              current buffer location
 *-----------------------------------------------------------------------------*/
-FILE *carrErrFile;
-FILE *freqErrFile;
-FILE *delayerrFile;
-
-// Function to open files for writing
-/*void openFiles() 
-{
-    carrErrFile    = fopen("carrErr.dat", "w");
-    freqErrFile    = fopen("freqErr.dat", "w");
-    delayerrFile   = fopen("delayerr.dat", "w");
 
 
-    if (carrErrFile == NULL || freqErrFile == NULL || delayerrFile == NULL) 
-    {
-        perror("Error opening files");
-        exit(EXIT_FAILURE);
-    }
-}
-
-// Function to close files
-void closeFiles() 
-{
-    fclose(carrErrFile);
-    fclose(freqErrFile);
-    fclose(delayerrFile);
-}
-
-// Function to store carrErr and freqErr values in files
-void storeValues(double carrErr, double freqErr) 
-{
-    fprintf(carrErrFile, "%lf\n", carrErr);
-    fprintf(freqErrFile, "%lf\n", freqErr);
-}*/
 extern uint64_t sdrtracking(sdrch_t *sdr, uint64_t buffloc, uint64_t cnt)
 {
     char *data=NULL;
@@ -155,7 +124,6 @@ extern void pll(sdrch_t *sdr, sdrtrkprm_t *prm, double dt)
     sdr->trk.carrfreq=sdr->acq.acqfreq+sdr->trk.carrNco;
     sdr->trk.carrErr=carrErr;
     sdr->trk.freqErr=freqErr;
-     //storeValues(sdr->trk.carrErr, sdr->trk.freqErr);
 }
 /* delay lock loop -------------------------------------------------------------
 * delay lock loop (2nd order DLL)
@@ -181,7 +149,6 @@ extern void dll(sdrch_t *sdr, sdrtrkprm_t *prm, double dt)
     sdr->trk.codefreq=sdr->crate-sdr->trk.codeNco+
         (sdr->trk.carrfreq-sdr->f_if-sdr->foffset)/(sdr->f_cf/sdr->crate);
     sdr->trk.codeErr=codeErr;
-   // fprintf(delayerrFile, "%lf\n", sdr->trk.codeErr);
 
 }
 /* set observation data --------------------------------------------------------

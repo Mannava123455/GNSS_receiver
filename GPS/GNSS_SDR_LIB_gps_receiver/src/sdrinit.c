@@ -499,6 +499,7 @@ extern int inittrkstruct(int sat, int ctype, double ctime, sdrtrk_t *trk)
     trk->sumQ   =(double*)calloc(1+2*trk->corrn,sizeof(double));
     trk->oldsumI=(double*)calloc(1+2*trk->corrn,sizeof(double));
     trk->oldsumQ=(double*)calloc(1+2*trk->corrn,sizeof(double));
+    trk->codeNco = 0;
 
     if (ctype==CTYPE_L1CA)   trk->loop=LOOP_L1CA;
     if (ctype==CTYPE_G1)     trk->loop=LOOP_G1;

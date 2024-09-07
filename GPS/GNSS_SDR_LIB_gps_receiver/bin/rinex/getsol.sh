@@ -50,4 +50,3 @@ do
 done  
 
 tput setaf 7
-#rm $navfile

@@ -45,7 +45,7 @@ LIBS+=-l:libbladeRF.so.2
 OBS+=bladerf.o
 endif
 
-CFLAGS=-Wall -O3 -march=native $(INCLUDE) $(OPTIONS) -g
+CFLAGS=-Wall  -march=native $(INCLUDE) $(OPTIONS) -g
 LDLIBS=-lm -lrt -lfftw3f -lfftw3f_threads -lpthread $(LIBS) -lusb-1.0
 
 BIN= ignss-sdrcli

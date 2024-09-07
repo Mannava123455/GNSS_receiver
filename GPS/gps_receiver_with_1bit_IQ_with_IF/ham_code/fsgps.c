@@ -835,7 +835,9 @@ static void attempt_solution(struct Snapshot *s)
         }
 
         phase_in_gold_code = (s->entries[e].lock_code_nco >> 1) & 0x7FFFFFFF;
-        printf("************************nco value is :%lf\n",(((double)phase_in_gold_code) / (1023 * (1 << 21))));//  - space_vehicles[sv].acquire.max_offset/2048) * 1023);
+        printf("************************nco value is :%lf\n",((((double)phase_in_gold_code) / (1023 * (1 << 21)))  -  (space_vehicles[sv].acquire.max_offset/2048.00))*1023.00);
+        //((((double)phase_in_gold_code) / (1023 * (1 << 21))  -  (space_vehicles[sv].acquire.max_offset/2048.00)) * 1023)
+        printf("************************nco+codephase value is :%lf\n",(((double)phase_in_gold_code) / (1023 * (1 << 21))));
         /* calc transmit time milliseconds  */
         space_vehicles[sv].time_raw = s->entries[e].nav_subframe_of_week * 6000 + s->entries[e].lock_ms_of_frame + ((double)phase_in_gold_code) / (1023 * (1 << 21));
         /* Convert from milliseconds to seconds */

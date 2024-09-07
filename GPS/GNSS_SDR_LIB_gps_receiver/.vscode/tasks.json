@@ -2,17 +2,11 @@
     "tasks": [
         {
             "type": "cppbuild",
-            "label": "C/C++: gcc-11 build active file",
-            "command": "/usr/bin/gcc-11",
-            "args": [
-                "-fdiagnostics-color=always",
-                "-g",
-                "${file}",
-                "-o",
-                "${fileDirname}/${fileBasenameNoExtension}"
-            ],
+            "label": "build",
+            "command": "make",
+            "args": [],
             "options": {
-                "cwd": "${fileDirname}"
+                "cwd": "/home/mannava/GNSS_receiver/GPS/GNSS_SDR_LIB_gps_receiver/cli/linux"
             },
             "problemMatcher": [
                 "$gcc"

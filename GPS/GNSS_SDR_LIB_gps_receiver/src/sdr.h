@@ -18,6 +18,7 @@
 #include <stdarg.h>
 #include <ctype.h>
 
+#define SSE2_ENABLE 1
 /* SIMD (SSE2_ENABLE) */
 #if defined(SSE2_ENABLE)
 #include <emmintrin.h>
@@ -162,7 +163,7 @@ extern "C" {
 #define ACQSLEEP      2000             /* acquisition process interval (ms) */
 
 /* tracking setting */
-//#define LOOP_L1CA     10               /* loop interval */
+// #define LOOP_L1CA     10               /* loop interval */
 #define LOOP_L1CA     1                 /* loop interval */
 #define LOOP_G1       10               /* loop interval */
 #define LOOP_E1B      1                /* loop interval */
